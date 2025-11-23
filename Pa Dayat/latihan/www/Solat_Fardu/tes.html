@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tes Shalat | ShalatKu</title>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <style>
+    body {
+      background: #f8f9fa;
+      font-family: "Poppins", sans-serif;
+    }
+    .container {
+      max-width: 700px;
+      margin-top: 40px;
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .question {
+      margin-bottom: 25px;
+      text-align: left;
+    }
+    .option {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px 15px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+    .option:hover { background-color: #f1f1f1; }
+    .selected { background-color: #e3f2fd; border-color: #0d6efd; }
+    .correct { background-color: #d4edda; border-color: #28a745; }
+    .wrong { background-color: #f8d7da; border-color: #dc3545; }
+    .result {
+      text-align: center;
+      font-size: 20px;
+      font-weight: 600;
+      margin-top: 25px;
+    }
+    .btn-ulang {
+      display: block;
+      margin: 20px auto 0 auto;
+    }
+    h5 {
+      font-size: 17px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1 class="text-center mb-4">🕌 Tes Panduan Shalat</h1>
+
+  <form id="quizForm">
+    <div id="quizContainer"></div>
+    <button type="submit" class="btn btn-success w-100 mt-3">Kirim Jawaban</button>
+  </form>
+
+  <div id="resultContainer" class="result"></div>
+  <button id="ulangBtn" class="btn btn-secondary btn-ulang" style="display:none;">Ulang Tes</button>
+
+  <div class="text-center mt-4">
+    <a href="home.html" class="btn btn-danger btn-sm">Kembali ke Menu</a>
+  </div>
+</div>
+
+<script>
+const pertanyaan = [
+  { soal: "Apa arti niat dalam shalat?", pilihan: ["Keinginan dalam hati untuk melakukan ibadah karena Allah", "Gerakan pertama dalam shalat", "Doa setelah salam"], jawaban: 0 },
+  { soal: "Apa yang diucapkan saat Takbiratul Ihram?", pilihan: ["Bismillahirrahmanirrahim", "Allahu Akbar", "Subhana rabbiyal a’la"], jawaban: 1 },
+  { soal: "Surat apa yang wajib dibaca dalam setiap rakaat?", pilihan: ["Surat Al-Ikhlas", "Surat Al-Baqarah", "Surat Al-Fatihah"], jawaban: 2 },
+  { soal: "Apa bacaan saat rukuk?", pilihan: ["Subhana rabbiyal ‘azhim wa bihamdih", "Allahu Akbar", "Rabbana atina fid-dunya"], jawaban: 0 },
+  { soal: "Apa bacaan ketika I’tidal (bangun dari rukuk)?", pilihan: ["Rabbana lakal hamdu", "Allahu Akbar", "Astaghfirullah"], jawaban: 0 },
+  { soal: "Apa bacaan dalam sujud?", pilihan: ["Subhana rabbiyal a’la wa bihamdih", "Subhana rabbiyal azim wa bihamdih", "Bismillahirrahmanirrahim"], jawaban: 0 },
+  { soal: "Apa bacaan duduk di antara dua sujud?", pilihan: ["Rabbana lakal hamdu", "Allahummaghfirli warhamni wajburni wahdini warzuqni", "Subhana rabbiyal a’la"], jawaban: 1 },
+  { soal: "Pada Tasyahud Akhir kita membaca kalimat syahadat. Apa bunyinya?", pilihan: ["Asyhadu alla ilaha illallah wa asyhadu anna Muhammadan rasulullah", "Subhanallah walhamdulillah", "Astaghfirullahaladzim"], jawaban: 0 },
+  { soal: "Dalam bacaan shalawat, kepada siapa kita bershalawat?", pilihan: ["Kepada malaikat", "Kepada Nabi Muhammad SAW", "Kepada diri sendiri"], jawaban: 1 },
+  { soal: "Apa yang diucapkan saat salam?", pilihan: ["Assalamu’alaikum warahmatullahi wabarakatuh", "Allahu Akbar", "Bismillahirrahmanirrahim"], jawaban: 0 },
+  { soal: "Berapa rakaat shalat Maghrib?", pilihan: ["2 rakaat", "3 rakaat", "4 rakaat"], jawaban: 1 },
+  { soal: "Apa tujuan utama shalat bagi seorang Muslim?", pilihan: ["Mendapat pahala", "Menunjukkan diri sebagai Muslim", "Mengingat Allah dan mencegah perbuatan keji dan mungkar"], jawaban: 2 },
+  { soal: "Jika seseorang tertinggal 1 rakaat dari imam, apa yang harus dilakukan setelah imam salam?", pilihan: ["Langsung ikut salam", "Menambah rakaat yang tertinggal", "Mengulang dari awal"], jawaban: 1 },
+  { soal: "Ketika shalat berjamaah, posisi makmum perempuan berada di mana?", pilihan: ["Sejajar dengan imam", "Di belakang makmum laki-laki", "Di samping kanan imam"], jawaban: 1 },
+  { soal: "Apa hukum meninggalkan shalat wajib dengan sengaja?", pilihan: ["Dimaafkan jika sibuk", "Dosa besar", "Cukup diganti dengan sedekah"], jawaban: 1 },
+  { soal: "Mengapa kita tidak boleh mendahului imam dalam gerakan shalat?", pilihan: ["Karena gerakan harus seragam", "Karena mendahului imam membatalkan shalat", "Karena imam lebih tua"], jawaban: 1 },
+  { soal: "Saat lupa jumlah rakaat, apa yang disarankan untuk dilakukan?", pilihan: ["Membatalkan shalat", "Memilih yang paling yakin dan lakukan sujud sahwi", "Mengulang dari awal"], jawaban: 1 },
+  { soal: "Apa makna membaca Al-Fatihah dalam setiap rakaat?", pilihan: ["Sebagai doa pembuka dan inti dari Al-Qur’an", "Sebagai bacaan wajib sebelum ruku’", "Sebagai doa penutup shalat"], jawaban: 0 },
+  { soal: "Kapan waktu shalat Isya berakhir?", pilihan: ["Sebelum tengah malam", "Saat adzan Subuh", "Saat terbit matahari"], jawaban: 0 },
+  { soal: "Bagaimana adab berpakaian saat melaksanakan shalat?", pilihan: ["Yang penting sopan", "Menutup aurat dan bersih dari najis", "Sesuai warna pakaian imam"], jawaban: 1 }
+];
+
+const quizContainer = document.getElementById("quizContainer");
+pertanyaan.forEach((item, index) => {
+  const div = document.createElement("div");
+  div.classList.add("question");
+  div.innerHTML = `
+    <h5>${index + 1}. ${item.soal}</h5>
+    ${item.pilihan.map((pil, i) => `
+      <div class="option" data-q="${index}" data-index="${i}">
+        <input type="radio" name="q${index}" value="${i}" hidden>
+        ${pil}
+      </div>
+    `).join('')}
+    <hr>
+  `;
+  quizContainer.appendChild(div);
+});
+document.querySelectorAll(".option").forEach(opt => {
+  opt.addEventListener("click", () => {
+    const q = opt.getAttribute("data-q");
+    document.querySelectorAll(`.option[data-q="${q}"]`).forEach(o => o.classList.remove("selected"));
+    opt.classList.add("selected");
+    opt.querySelector("input").checked = true;
+  });
+});
+
+document.getElementById("quizForm").addEventListener("submit", e => {
+  e.preventDefault();
+  let skor = 0;
+  pertanyaan.forEach((item, i) => {
+    const options = document.querySelectorAll(`.option[data-q="${i}"]`);
+    const jawaban = document.querySelector(`input[name="q${i}"]:checked`);
+    options.forEach(o => {
+      const idx = parseInt(o.getAttribute("data-index"));
+      o.classList.remove("selected");
+      if (idx === item.jawaban) o.classList.add("correct");
+      if (jawaban && parseInt(jawaban.value) === idx && idx !== item.jawaban) o.classList.add("wrong");
+    });
+    if (jawaban && parseInt(jawaban.value) === item.jawaban) skor++;
+  });
+
+  const total = pertanyaan.length;
+  const hasil = document.getElementById("resultContainer");
+  hasil.textContent = `Skor Kamu: ${skor} dari ${total}`;
+  if (skor >= 16) hasil.innerHTML += "<br><span style='color:green;'>🌟 Luar biasa! Kamu sangat memahami tata cara shalat.</span>";
+  else if (skor >= 10) hasil.innerHTML += "<br><span style='color:orange;'>🙂 Sudah bagus, tapi masih ada yang bisa ditingkatkan.</span>";
+  else hasil.innerHTML += "<br><span style='color:red;'>😅 Masih perlu belajar lagi, semangat ya!</span>";
+
+  const hasilTes = { skor, total, waktu: new Date().toLocaleString() };
+  localStorage.setItem("hasil_tes_shalat", JSON.stringify(hasilTes));
+
+  document.getElementById("ulangBtn").style.display = "block";
+});
+
+document.getElementById("ulangBtn").addEventListener("click", () => window.location.reload());
+</script>
+
+</body>
+</html>

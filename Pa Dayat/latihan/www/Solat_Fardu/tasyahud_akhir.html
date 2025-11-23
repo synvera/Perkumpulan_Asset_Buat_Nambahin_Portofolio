@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <title>Membaca Al-Fatihah | ShalatKu</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600&family=Poppins:wght@400;600&display=swap');
+
+    body {
+      background-color: #f8f9fa;
+      color: #000;
+      font-family: "Poppins", sans-serif;
+    }
+    .container {
+      max-width: 850px;
+    }
+    .card {
+      background-color: #fff;
+      border: none;
+      border-radius: 12px;
+    }
+    .text-center img {
+      width: 300px;
+      margin: 10px 0 20px;
+    }
+    .arabic {
+      font-family: "Noto Sans Arabic", sans-serif;
+      font-size: 25px;
+      line-height: 2;
+      text-align: center;
+      direction: rtl;
+    }
+    .latin, .arti {
+      font-size: 15px;
+      line-height: 1.8;
+    }
+    .btn-outline-dark, .btn-dark {
+      border-radius: 8px;
+    }
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container py-4">
+    <div class="mb-3">
+      <button class="btn btn-outline-dark" onclick="window.location.href='duduk.html'">← Kembali</button>
+    </div>
+
+    <h2 class="text-center mb-4 fw-bold text-dark"><b>Tasyahud Akhir</b></h2>
+
+    <div class="card shadow-sm p-4 text-dark">
+      <div class="text-center">
+        <img src="img/duduk diantara dua sujud.png" alt="Membaca Al-Fatihah">
+      </div>
+
+      <p>
+       Tasyahud akhir adalah duduk terakhir dalam salat sebelum salam. Dilakukan pada rakaat terakhir (rakaat ke-2, ke-3, atau ke-4 tergantung jenis salat). Ini adalah momen refleksi dan pengakuan keimanan sebelum mengakhiri salat.
+      </p>
+
+      <h5 class="mt-3"><b>🕋 Bacaan Tasyahud Awal</b></h5>
+      <div class="arabic mt-3">
+        التَّحِيَّاتُ الْمُبَارَكَاتُ الصَّلَوَاتُ الطَّيِّبَاتُ ِللهِ ، السَّلاَمُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللهِ وَبَرَكاَتُهُ السَّلاَمُ عَلَيْنَا وَعَلَى عِبَادِ اللهِ الصَّالِحِيْنَ . أَشْهَدُ أَنْ لاَ إِلَهَ إِلاَّ الله وَأَشْهَدُ أَنَّ مُحَمَّدًا رَسُوْلُ الله
+
+اَلَّلهُمَّ صَلِّ عَلَي مُحَمّدْ وعلى آلِ مُحَمَّد كَمَا صَلَّبْتَ عَلَى إِبْرَاهِيْمَ وَعَلَى آلِ إِبْرَاهِيْمَ وَبَارِكْ عَلعَلَي مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا بَارَكْتَ عَلَى إِبْرَاهِيْمَ وَعَلَى آلِ إِبْرَاهِيْمَ فِيْ الْعَالَمِيْنَ إِنَّكَ حَمِيْدٌ مَجِيْد
+
+      </div>
+      <h5 class="mt-4"><b>🔤 Latin</b></h5>
+      <p class="latin">
+        "At tahiyyaatul mubaarakaatush shalawaatuth thoyyibaatulillaah. as salaamu'alaika ayyuhan nabiyyu wa rahmatullaahi wabarakaatuh, assalaamu'alaina wa'alaa ibaadillaahishaalihiin. asyhaduallaa ilaaha illallaah, wa asyhadu anna muhammad rasuulullaah.
+
+Allaahumma shalli'alaa muhammad, wa'alaa aali muhammad. kamaa shallaita alaa ibraahiim wa alaa aali ibraahiim. wabaarik'alaa muhammad wa alaa aali muhammad. kamaa baarakta alaa ibraahiim wa alaa aali ibraahiim, fil'aalamiina innaka hamiidum majiid."
+      </p>
+
+      <h5 class="mt-4"><b>🌟 Artinya</b></h5>
+      <p class="arti">
+        Segala kehormatan, keberkahan, rahmat dan keselamatan, serta kebaikan hanyalah kepunyaan Allah. Keselamatan, rahmat, dan berkah dari Allah semoga tetap tercurah atasmu, wahai Nabi (Muhammad). Keselamatan, rahmat dan berkah dari Allah semoga juga tercurah atas kami, dan juga atas seluruh hamba Allah yang sholeh. Aku bersaksi bahwa tiada Tuhan selain Allah dan bahwa Muhammad adalah utusan Allah.
+
+Ya Allah, limpahilah rahmat atas keluarga Nabi Muhammad, seperti rahmat yang Engkau berikan kepada Nabi Ibrahim dan keluarganya. Dan limpahilah berkah atas Nabi Muhammad beserta para keluarganya, seperti berkah yang Engkau berikan kepada Nabi Ibrahim dan keluarganya, Engkaulah Tuhan yang sangat terpuji lagi sangat mulia diseluruh alam.
+      </p>
+
+      <div class="text-center mt-4">
+        <button class="btn btn-dark" id="nextBtn">Lanjut ➜ Salam</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const langkahSekarang = 'alfatihah';
+    const halamanTujuan = 'salam.html';
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      const progres = JSON.parse(localStorage.getItem('progres_shalat')) || {};
+      progres['alfatihah'] = true;
+      localStorage.setItem('progres_shalat', JSON.stringify(progres));
+      window.location.href = halamanTujuan;
+    });
+  </script>
+
+</body>
+</html>

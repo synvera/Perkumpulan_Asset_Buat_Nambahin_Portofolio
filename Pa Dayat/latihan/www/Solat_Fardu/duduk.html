@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <title>Membaca Al-Fatihah | ShalatKu</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600&family=Poppins:wght@400;600&display=swap');
+
+    body {
+      background-color: #f8f9fa;
+      color: #000;
+      font-family: "Poppins", sans-serif;
+    }
+    .container {
+      max-width: 850px;
+    }
+    .card {
+      background-color: #fff;
+      border: none;
+      border-radius: 12px;
+    }
+    .text-center img {
+      width: 300px;
+      margin: 10px 0 20px;
+    }
+    .arabic {
+      font-family: "Noto Sans Arabic", sans-serif;
+      font-size: 25px;
+      line-height: 2;
+      text-align: center;
+      direction: rtl;
+    }
+    .latin, .arti {
+      font-size: 15px;
+      line-height: 1.8;
+    }
+    .btn-outline-dark, .btn-dark {
+      border-radius: 8px;
+    }
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container py-4">
+    <div class="mb-3">
+      <button class="btn btn-outline-dark" onclick="window.location.href='sujud.html'">← Kembali</button>
+    </div>
+
+    <h2 class="text-center mb-4 fw-bold text-dark"><b>Tasyahud Awal</b></h2>
+
+    <div class="card shadow-sm p-4 text-dark">
+      <div class="text-center">
+        <img src="img/duduk diantara dua sujud.png" alt="Membaca Al-Fatihah">
+      </div>
+
+      <p>
+       Gerakan ini dilakukan setelah sujud pertama dan sebelum sujud kedua dalam satu rakaat. Ini adalah momen istirahat sejenak yang penuh makna spiritual, bukan sekadar transisi.
+      </p>
+
+      <h5 class="mt-3"><b>🕋 Bacaan Tasyahud Awal</b></h5>
+      <div class="arabic mt-3">
+        رَبِّ اغْفِرْلِيْ وَارْحَمْنِيْ وَاجْبُرْنِيْ وَارْفَعْنِيْ وَارْزُقْنِيْ وَاهْدِنِيْ وَعَافِنِيْ وَاعْفُ عَنِّيْهِ
+      </div>
+      <h5 class="mt-4"><b>🔤 Latin</b></h5>
+      <p class="latin">
+        "ROBBIGHFIRLII WARHAMNII WAJBURNII WARFA'NII WARZUQNII WAHGDINII WA'AAFINII WA'FU 'ANNII"
+      </p>
+
+      <h5 class="mt-4"><b>🌟 Artinya</b></h5>
+      <p class="arti">
+        Ya Allah,ampunilah dosaku,belas kasihinilah aku dan cukuplah segala kekuranganku da angkatlah derajatku dan berilah rezeki kepadaku,dan berilah aku petunjuk dan berilah kesehatan padaku dan berilah ampunan kepadaku.
+      </p>
+
+      <div class="text-center mt-4">
+        <button class="btn btn-dark" id="nextBtn">Lanjut ➜ Tasyahud Akhir</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const langkahSekarang = 'alfatihah';
+    const halamanTujuan = 'tasyahud_akhir.html';
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      const progres = JSON.parse(localStorage.getItem('progres_shalat')) || {};
+      progres['alfatihah'] = true;
+      localStorage.setItem('progres_shalat', JSON.stringify(progres));
+      window.location.href = halamanTujuan;
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>ShalatKu | Synvera</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <script src="js/bootstrap.bundle.min.js"></script>
+</head>
+<style>
+  .text-center img{
+    width: 450px;
+  }
+</style>
+<body>
+  
+<div class="container">
+    <div class="text-center">
+        <h1>Membaca shalawwat</h1>
+        <img src="img/akhir.png"/>
+        <p>
+           
+اَللّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى الِ مُحَمَّدٍ كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيْمَ وَالِ إِبْرَاهِيْمَ وَبَارِكْ عَلَى مُحَمَّدٍ وَالِ مُحَمَّدٍ كَمَا بَارَكْتَ عَلَى إِبْرَاهِيْمَ وَالِ
+إِبْرَاهِيْمَ. إِنَّكَ حَمِيْدٌ مَجِيْدٌ
+<br/>
+
+        </p>
+    </div>
+</div>
+    <div class="mt-3 mb-4">
+    <a href="home.html" class="btn btn-danger btn-sm">Kembali</a>
+    <a href="#" id="nextBtn" class="btn btn-primary btn-sm float-end">Salam</a>
+  </div>
+</div>
+
+<script>
+  const faqs = document.querySelectorAll('.faq');
+  faqs.forEach(faq => {
+    faq.querySelector('.faq-header').addEventListener('click', () => {
+      faq.classList.toggle('active');
+    });
+  });
+
+  const langkahSekarang = 'shalawat';
+  const halamanTujuan = 'salam.html';
+
+  document.getElementById('nextBtn').addEventListener('click', e => {
+    e.preventDefault();
+    const progres = JSON.parse(localStorage.getItem('progres_shalat')) || {};
+    progres[langkahSekarang] = true;
+    localStorage.setItem('progres_shalat', JSON.stringify(progres));
+    window.location.href = halamanTujuan;
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Niat Shalat | ShalatKu</title>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      color: #000;
+      font-family: "Segoe UI", sans-serif;
+    }
+    .arabic {
+      font-size: 1.3rem;
+      font-weight: bold;
+      direction: rtl;
+      text-align: right;
+      color: #000;
+    }
+    .latin {
+      font-style: italic;
+      color: #444;
+    }
+    .arti {
+      color: #000;
+      margin-bottom: 10px;
+    }
+    .subjudul {
+      font-weight: 600;
+      margin-top: 10px;
+      color: #000;
+    }
+    .faq-header {
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 1px solid #ddd;
+      padding: 10px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .faq-content {
+      display: none;
+      padding-top: 10px;
+    }
+    .faq.active .faq-content {
+      display: block;
+    }
+    .icon {
+      transition: transform 0.3s;
+    }
+    .faq.active .icon {
+      transform: rotate(45deg);
+    }
+  </style>
+</head>
+
+<body class="bg-light">
+
+  <div class="container py-4">
+    <div class="mb-3">
+      <button class="btn btn-outline-dark" onclick="window.location.href='home.html'">← Kembali</button>
+    </div>
+
+    <h2 class="text-center mb-4 fw-bold text-dark">🕋 <b>Niat Shalat Fardhu</b></h2>
+
+    <div class="card shadow-sm p-4 text-dark">
+      <div class="text-center mb-3">
+        <img src="img/niat.png" alt="Niat Shalat" style="max-width:160px;">
+        <p class="mt-3">
+          Niat merupakan salah satu rukun salat yang wajib dilakukan di dalam hati,
+          bersamaan dengan takbiratul ihram ("Allahu Akbar").
+        </p>
+      </div>
+
+      <!-- FAQ Container -->
+      <div class="faq-container">
+
+        <!-- SUBUH -->
+        <div class="faq">
+          <div class="faq-header">
+            <span>Sholat Subuh (2 rakaat)</span>
+            <span class="icon">+</span>
+          </div>
+          <div class="faq-content">
+            <p><strong>Sendiri (Munfarid):</strong></p>
+    <span class="arab">أُصَلِّي فَرْضَ الصُّبْحِ رَكْعَتَيْنِ مُسْتَقْبِلَ الْقِبْلَةِ لِلَّهِ تَعَالَى</span>
+    <p><em>Ushallî fardhas-shubhi rak‘ataini mustaqbilal-qiblati lillâhi ta‘âlâ.</em></p>
+
+    <p><strong>Imam:</strong></p>
+    <span class="arab">أُصَلِّي فَرْضَ الصُّبْحِ رَكْعَتَيْنِ إِمَامًا لِلَّهِ تَعَالَى</span>
+    <p><em>Ushallî fardhas-shubhi rak‘ataini imâman lillâhi ta‘âlâ.</em></p>
+
+    <p><strong>Makmum:</strong></p>
+    <span class="arab">أُصَلِّي فَرْضَ الصُّبْحِ رَكْعَتَيْنِ مَأْمُومًا لِلَّهِ تَعَالَى</span>
+    <p><em>Ushallî fardhas-shubhi rak‘ataini ma’mûman lillâhi ta‘âlâ.</em></p>
+          </div>
+        </div>
+
+        <!-- DZUHUR -->
+        <div class="faq">
+          <div class="faq-header">
+            <span>Sholat Dzuhur (4 rakaat)</span>
+            <span class="icon">+</span>
+          </div>
+          <div class="faq-content">
+            <p><strong>Sendiri (Munfarid):</strong></p>
+    <span class="arab">أُصَلِّي فَرْضَ الظُّهْرِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ لِلَّهِ تَعَالَى</span>
+    <p><em>Ushallî fardhaz-zhuhri arba‘a raka‘âtin mustaqbilal-qiblati lillâhi ta‘âlâ.</em></p>
+
+    <p><strong>Imam:</strong></p>
+    <span class="arab">أُصَلِّي فَرْضَ الظُّهْرِ أَرْبَعَ رَكَعَاتٍ إِمَامًا لِلَّهِ تَعَالَى</span>
+    <p><em>Ushallî fardhaz-zhuhri arba‘a raka‘âtin imâman lillâhi ta‘âlâ.</em></p>
+
+    <p><strong>Makmum:</strong></p>
+    <span class="arab">أُصَلِّي فَرْضَ الظُّهْرِ أَرْبَعَ رَكَعَاتٍ مَأْمُومًا لِلَّهِ تَعَالَى</span>
+    <p><em>Ushallî fardhaz-zhuhri arba‘a raka‘âtin ma’mûman lillâhi ta‘âlâ.</em></p>
+          </div>
+        </div>
+
+        <!-- ASHAR -->
+        <div class="faq">
+          <div class="faq-header">
+            <span>Sholat Ashar (4 rakaat)</span>
+            <span class="icon">+</span>
+          </div>
+          <div class="faq-content">
+            <p><strong>Sendiri (Munfarid):</strong></p>
+    <span class="arab">أُصَلِّي فَرْضَ الْعَصْرِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ لِلَّهِ تَعَالَى</span>
+    <p><em>Ushallî fardhal-‘ashri arba‘a raka‘âtin mustaqbilal-qiblati lillâhi ta‘âlâ.</em></p>
+
+    <p><strong>Imam:</strong></p>
+    <span class="arab">أُصَلِّي فَرْضَ الْعَصْرِ أَرْبَعَ رَكَعَاتٍ إِمَامًا لِلَّهِ تَعَالَى</span>
+    <p><em>Ushallî fardhal-‘ashri arba‘a raka‘âtin imâman lillâhi ta‘âlâ.</em></p>
+
+    <p><strong>Makmum:</strong></p>
+    <span class="arab">أُصَلِّي فَرْضَ الْعَصْرِ أَرْبَعَ رَكَعَاتٍ مَأْمُومًا لِلَّهِ تَعَالَى</span>
+    <p><em>Ushallî fardhal-‘ashri arba‘a raka‘âtin ma’mûman lillâhi ta‘âlâ.</em></p>
+          </div>
+        </div>
+
+        <!-- MAGHRIB -->
+        <div class="faq">
+          <div class="faq-header">
+            <span>Sholat Maghrib (3 rakaat)</span>
+            <span class="icon">+</span>
+          </div>
+          <div class="faq-content">
+            <p><strong>Sendiri (Munfarid):</strong></p>
+    <span class="arab">أُصَلِّي فَرْضَ الْمَغْرِبِ ثَلَاثَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ لِلَّهِ تَعَالَى</span>
+    <p><em>Ushallî fardhal-maghribi tsalâtsa raka‘âtin mustaqbilal-qiblati lillâhi ta‘âlâ.</em></p>
+
+    <p><strong>Imam:</strong></p>
+    <span class="arab">أُصَلِّي فَرْضَ الْمَغْرِبِ ثَلَاثَ رَكَعَاتٍ إِمَامًا لِلَّهِ تَعَالَى</span>
+    <p><em>Ushallî fardhal-maghribi tsalâtsa raka‘âtin imâman lillâhi ta‘âlâ.</em></p>
+
+    <p><strong>Makmum:</strong></p>
+    <span class="arab">أُصَلِّي فَرْضَ الْمَغْرِبِ ثَلَاثَ رَكَعَاتٍ مَأْمُومًا لِلَّهِ تَعَالَى</span>
+    <p><em>Ushallî fardhal-maghribi tsalâtsa raka‘âtin ma’mûman lillâhi ta‘âlâ.</em></p>
+          </div>
+        </div>
+
+        <!-- ISYA -->
+        <div class="faq">
+          <div class="faq-header">
+            <span>Sholat Isya (4 rakaat)</span>
+            <span class="icon">+</span>
+          </div>
+          <div class="faq-content">
+            <p><strong>Sendiri (Munfarid):</strong></p>
+    <span class="arab">أُصَلِّي فَرْضَ الْعِشَاءِ أَرْبَعَ رَكَعَاتٍ مُسْتَقْبِلَ الْقِبْلَةِ لِلَّهِ تَعَالَى</span>
+    <p><em>Ushallî fardhal-‘isyâ’i arba‘a raka‘âtin mustaqbilal-qiblati lillâhi ta‘âlâ.</em></p>
+
+    <p><strong>Imam:</strong></p>
+    <span class="arab">أُصَلِّي فَرْضَ الْعِشَاءِ أَرْبَعَ رَكَعَاتٍ إِمَامًا لِلَّهِ تَعَالَى</span>
+    <p><em>Ushallî fardhal-‘isyâ’i arba‘a raka‘âtin imâman lillâhi ta‘âlâ.</em></p>
+
+    <p><strong>Makmum:</strong></p>
+    <span class="arab">أُصَلِّي فَرْضَ الْعِشَاءِ أَرْبَعَ رَكَعَاتٍ مَأْمُومًا لِلَّهِ تَعَالَى</span>
+    <p><em>Ushallî fardhal-‘isyâ’i arba‘a raka‘âtin ma’mûman lillâhi ta‘âlâ.</em></p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="text-center mt-4">
+        <button class="btn btn-dark" id="nextBtn">Lanjut ➜ Takbiratul Ihram</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const faqs = document.querySelectorAll('.faq');
+    faqs.forEach(faq => {
+      faq.querySelector('.faq-header').addEventListener('click', () => {
+        faq.classList.toggle('active');
+      });
+    });
+
+document.getElementById('nextBtn').addEventListener('click', () => {
+  const progres = JSON.parse(localStorage.getItem('progres_shalat')) || {};
+  progres['niat'] = true;
+  localStorage.setItem('progres_shalat', JSON.stringify(progres));
+  console.log('Progress tersimpan:', progres); // HARUS MUNCUL DI CONSOLE
+  window.location.href = 'takbir.html';
+});
+
+  </script>
+
+</body>
+</html>

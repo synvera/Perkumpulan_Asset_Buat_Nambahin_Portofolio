@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <title>ShalatKu | Synvera</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="home.css">
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <style>
+    :root {
+      --black: #000000;
+      --white: #ffffff;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+    }
+
+    body {
+      background: var(--white);
+      min-height: 100vh;
+      padding: 40px 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: var(--black);
+    }
+
+    .main-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .header-card {
+      text-align: center;
+      margin-bottom: 50px;
+      padding-bottom: 30px;
+      border-bottom: 2px solid var(--black);
+    }
+
+    .header-card h1 {
+      color: var(--black);
+      font-weight: 700;
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      letter-spacing: -0.5px;
+    }
+
+    .header-card .greeting {
+      color: var(--gray-800);
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+
+    .info-card {
+      padding: 30px;
+      margin-bottom: 40px;
+      border: 1px solid var(--gray-300);
+      background: var(--gray-50);
+    }
+
+    .info-card h5 {
+      color: var(--gray-800);
+      line-height: 1.8;
+      font-weight: 400;
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .progress-overview {
+      padding: 25px;
+      margin-bottom: 40px;
+      border: 2px solid var(--black);
+      background: var(--white);
+    }
+
+    .progress-overview h4 {
+      margin: 0 0 20px 0;
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .progress-bar-custom {
+      background: var(--gray-200);
+      height: 8px;
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+
+    .progress-bar-fill {
+      background: var(--black);
+      height: 100%;
+      transition: width 0.5s ease;
+    }
+
+    .progress-text {
+      font-size: 0.95rem;
+      color: var(--gray-800);
+      margin: 0;
+    }
+
+    .steps-container {
+      margin-bottom: 40px;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      margin-bottom: 12px;
+      background: var(--white);
+      border: 1px solid var(--gray-300);
+      text-decoration: none;
+      color: var(--black);
+      transition: all 0.2s ease;
+    }
+
+    .step-item:hover {
+      border-color: var(--black);
+      background: var(--gray-50);
+    }
+
+    .step-number {
+      width: 40px;
+      height: 40px;
+      border: 2px solid var(--black);
+      background: var(--white);
+      color: var(--black);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1rem;
+      margin-right: 20px;
+      flex-shrink: 0;
+    }
+
+    .step-content {
+      flex: 1;
+      font-weight: 500;
+      font-size: 1rem;
+    }
+
+    .step-check {
+      width: 30px;
+      height: 30px;
+      border: 2px solid var(--gray-300);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      transition: all 0.2s ease;
+      background: var(--white);
+    }
+
+    .step-item.selesai {
+      background: var(--black);
+      color: var(--white);
+      border-color: var(--black);
+    }
+
+    .step-item.selesai .step-number {
+      background: var(--white);
+      color: var(--black);
+      border-color: var(--white);
+    }
+
+    .step-item.selesai .step-content {
+      color: var(--white);
+    }
+
+    .step-item.selesai .step-check {
+      background: var(--white);
+      color: var(--black);
+      border-color: var(--white);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+
+    .btn-custom {
+      padding: 15px 35px;
+      font-weight: 600;
+      font-size: 1rem;
+      border: 2px solid var(--black);
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      background: var(--white);
+      color: var(--black);
+    }
+
+    .btn-test {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .btn-test:hover {
+      background: var(--gray-900);
+      color: var(--white);
+    }
+
+    .btn-reset {
+      background: var(--white);
+      color: var(--black);
+    }
+
+    .btn-reset:hover {
+      background: var(--gray-50);
+    }
+
+    .btn-back {
+      background: var(--white);
+      color: var(--black);
+      border: 1px solid var(--gray-300);
+      padding: 12px 30px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 20px;
+    }
+
+    .btn-back:hover {
+      border-color: var(--black);
+      background: var(--gray-50);
+    }
+
+    .back-container {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 1px solid var(--gray-300);
+    }
+
+    .modal-content {
+      border: 2px solid var(--black);
+      border-radius: 0;
+    }
+
+    .modal-header {
+      background: var(--black);
+      color: var(--white);
+      border-bottom: none;
+      padding: 25px;
+    }
+
+    .modal-header .btn-close {
+      filter: invert(1);
+    }
+
+    .modal-body {
+      padding: 30px;
+      font-size: 1rem;
+      background: var(--white);
+    }
+
+    .modal-footer {
+      padding: 20px 30px;
+      border-top: 1px solid var(--gray-300);
+      background: var(--white);
+    }
+
+    .modal-footer .btn {
+      border: 2px solid var(--black);
+      padding: 10px 25px;
+      font-weight: 600;
+      background: var(--white);
+      color: var(--black);
+    }
+
+    .modal-footer .btn-secondary {
+      border-color: var(--gray-300);
+    }
+
+    .modal-footer .btn-secondary:hover {
+      background: var(--gray-50);
+      border-color: var(--black);
+    }
+
+    .modal-footer .btn-danger,
+    .modal-footer .btn-success {
+      background: var(--black);
+      color: var(--white);
+      border-color: var(--black);
+    }
+
+    .modal-footer .btn-danger:hover,
+    .modal-footer .btn-success:hover {
+      background: var(--gray-900);
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 20px 0;
+      }
+
+      .header-card h1 {
+        font-size: 2rem;
+      }
+
+      .step-item {
+        padding: 15px;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+
+      .btn-custom {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+    
+<div class="container main-container">
+  <div class="header-card">
+    <h1>Sholat Fardu</h1>
+  </div>
+
+  <div class="info-card">
+    <h5>Mari belajar tata cara shalat langkah demi langkah. Selesaikan setiap tahapan dari niat hingga salam, lalu uji pemahamanmu dengan tes di akhir.</h5>
+  </div>
+
+  <div class="steps-container">
+    <div id="daftarLangkah">
+      <a href="niat.html" class="step-item" data-step="niat">
+        <div class="step-number">1</div>
+        <div class="step-content">Niat</div>
+        <div class="step-check">○</div>
+      </a>
+      <a href="takbir.html" class="step-item" data-step="takbir">
+        <div class="step-number">2</div>
+        <div class="step-content">Takbiratul Ihram</div>
+        <div class="step-check">○</div>
+      </a>
+      <a href="alfatihah.html" class="step-item" data-step="alfatihah">
+        <div class="step-number">3</div>
+        <div class="step-content">Membaca Surat Alfatihah</div>
+        <div class="step-check">○</div>
+      </a>
+      <a href="rukuk.html" class="step-item" data-step="rukuk">
+        <div class="step-number">4</div>
+        <div class="step-content">Rukuk</div>
+        <div class="step-check">○</div>
+      </a>
+      <a href="itidal.html" class="step-item" data-step="itidal">
+        <div class="step-number">5</div>
+        <div class="step-content">I'tidal</div>
+        <div class="step-check">○</div>
+      </a>
+      <a href="sujud.html" class="step-item" data-step="sujud">
+        <div class="step-number">6</div>
+        <div class="step-content">Sujud</div>
+        <div class="step-check">○</div>
+      </a>
+      <a href="duduk.html" class="step-item" data-step="duduk">
+        <div class="step-number">7</div>
+        <div class="step-content">Duduk Di Antara Dua Sujud</div>
+        <div class="step-check">○</div>
+      </a>
+      <a href="tasyahud_akhir.html" class="step-item" data-step="tasyahud_akhir">
+        <div class="step-number">8</div>
+        <div class="step-content">Tasyahud Akhir</div>
+        <div class="step-check">○</div>
+      </a>
+      <a href="salam.html" class="step-item" data-step="salam">
+        <div class="step-number">9</div>
+        <div class="step-content">Salam</div>
+        <div class="step-check">○</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="back-container">
+    <a href="../menu.html" class="btn-back">← Kembali ke Menu</a>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <title>Membaca Al-Fatihah | ShalatKu</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600&family=Poppins:wght@400;600&display=swap');
+
+    body {
+      background-color: #f8f9fa;
+      color: #000;
+      font-family: "Poppins", sans-serif;
+    }
+    .container {
+      max-width: 850px;
+    }
+    .card {
+      background-color: #fff;
+      border: none;
+      border-radius: 12px;
+    }
+    .text-center img {
+      width: 300px;
+      margin: 10px 0 20px;
+    }
+    .arabic {
+      font-family: "Noto Sans Arabic", sans-serif;
+      font-size: 25px;
+      line-height: 2;
+      text-align: center;
+      direction: rtl;
+    }
+    .latin, .arti {
+      font-size: 15px;
+      line-height: 1.8;
+    }
+    .btn-outline-dark, .btn-dark {
+      border-radius: 8px;
+    }
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container py-4">
+    <div class="mb-3">
+      <button class="btn btn-outline-dark" onclick="window.location.href='rukuk.html'">← Kembali</button>
+    </div>
+
+    <h2 class="text-center mb-4 fw-bold text-dark"><b>I'Tidal</b></h2>
+
+    <div class="card shadow-sm p-4 text-dark">
+      <div class="text-center">
+        <img src="img/solat.png" alt="Membaca Al-Fatihah">
+      </div>
+
+      <p>
+       I’tidal adalah gerakan berdiri tegak setelah rukuk dalam salat. Kata “i’tidal” berasal dari bahasa Arab yang berarti “lurus” atau “seimbang”. Gerakan ini mencerminkan ketenangan dan penghormatan sebelum melanjutkan ke sujud.
+
+
+
+      </p>
+
+      <h5 class="mt-3"><b>🕋 Bacaan I'Tidal</b></h5>
+      <div class="arabic mt-3">
+       سَمِعَ اللهُ لِمَنْ حَمِدَهُ
+      </div>
+      <p>lalu</p>
+      <div class="arabic mt-3">
+       رَبَّنَا لَكَ الْحَمْدُ مِلْءُ السَّموَاتِ وَمِلْءُ اْلاَرْضِ وَمِلْءُمَاشِئْتَ مِنْ شَيْئٍ بَعْدُ
+      </div>
+      <h5 class="mt-4"><b>🔤 Latin</b></h5>
+      <p class="latin">
+        "Samiallahuliman hamidah" <br>
+        ”Rabbanaa lakal hamdu mil'us samaawaati wa mil ul ardhi wa mil 'umaasyi'ta min syai'in ba'du.”
+      </p>
+
+      <h5 class="mt-4"><b>🌟 Artinya</b></h5>
+      <p class="arti">
+        Wahai Tuhan Kami ! Hanya Untuk-Mu lah Segala Puji, Sepenuh Langit Dan Bumi Dan Sepenuh Barang Yang Kau Kehendaki Sesudahnya.
+      </p>
+
+      <div class="text-center mt-4">
+        <button class="btn btn-dark" id="nextBtn">Lanjut ➜ Sujud</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const langkahSekarang = 'alfatihah';
+    const halamanTujuan = 'sujud.html';
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      const progres = JSON.parse(localStorage.getItem('progres_shalat')) || {};
+      progres['alfatihah'] = true;
+      localStorage.setItem('progres_shalat', JSON.stringify(progres));
+      window.location.href = halamanTujuan;
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <title>Takbiratul Ihram | ShalatKu</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <style>
+    body {
+      background-color: #f8f9fa;
+      color: #000;
+      font-family: "Segoe UI", sans-serif;
+    }
+    .container {
+      max-width: 800px;
+    }
+    .text-center img {
+      max-width: 300px;
+      margin: 15px 0;
+    }
+    .card {
+      background-color: #fff;
+      border: none;
+      border-radius: 12px;
+    }
+    .btn-outline-dark {
+      border-radius: 8px;
+    }
+    .btn-dark {
+      border-radius: 8px;
+    }
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container py-4">
+    <div class="mb-3">
+      <button class="btn btn-outline-dark" onclick="window.location.href='niat.html'">← Kembali</button>
+    </div>
+
+    <h2 class="text-center mb-4 fw-bold text-dark">🕋 <b>Takbiratul Ihram</b></h2>
+
+    <div class="card shadow-sm p-4 text-dark">
+      <div class="text-center">
+        <img src="img/takbir.png" alt="Takbiratul Ihram">
+      </div>
+
+      <p>
+        <b>Takbiratul Ihram</b> adalah ucapan <strong>“Allāhu Akbar”</strong> yang diucapkan saat memulai salat 
+        sambil mengangkat kedua tangan sejajar telinga atau bahu. Ini merupakan salah satu <b>rukun shalat</b> yang wajib dilakukan.
+      </p>
+
+      <h5 class="mt-3"><b>📖 Bacaan Takbiratul Ihram</b></h5>
+      <p class="arabic text-center" style="font-size:1.4rem; font-weight:bold; direction:rtl;">
+        اَللّٰهُ أَكْبَرُ
+      </p>
+      <p class="latin"><i>Allāhu Akbar</i></p>
+      <p><b>Artinya:</b> Allah Maha Besar.</p>
+
+      <p>
+        <b>Setelah takbir selesai, lanjut membaca Do'a Iftitah</b>
+      </p>
+
+      <h3 class="mt-3"><b>📖 Bacaan Do'a Iftitah</b></h3>
+      <p class="arabic text-center" style="font-size:1.4rem; font-weight:bold; direction:rtl;">
+        اَللهُ أَكْبَرُ كَبِيْرًا وَالْحَمْدُ ِللهِ كَثِيْرًا وَسُبْحَانَ اللهِ بُكْرَةً وَأَصِيْلاً.  وَجَّهْتُ وَجْهِيَ لِلَّذِيْ فَطَرَالسَّمَاوَاتِ وَاْلأَرْضَ حَنِيْفًا مُسْلِمًا وَمَا أَنَا مِنَ الْمُشْرِكِيْنَ. إِنَّ صَلاَتِيْ وَنُسُكِيْ وَمَحْيَايَ وَمَمَاتِيْ ِللهِ رَبِّ الْعَالَمِيْنَ. لاَشَرِيْكَ لَهُ وَبِذلِكَ أُمِرْتُ وَأَنَا مِنَ الْمُسْلِمِيْنَ
+      </p>
+      <p class="latin"><i>Allaahu Akbar kabiira, walhamdu lillaahi katsiira, wasubhaanallaahi bukratawwa ashiila. wajjahtu wajhiya lilladzii fatharassamaawaati wal ardha haniifam muslimaw wamaa anaa minal musyrikiin. Inna shalaatii wanusukii wamahyaaya wamamaatii lillaahi Rabbil ‘aalamiina. Laa syariikalahu wa bidzaalika umirtu wa anaa minal muslimiin.</i></p>
+      <p><b>Artinya:</b> "Allah Maha Besar dengan sebesar-besarnya. Segala puji yang sebanyak-banyaknya bagi Allah. Maha Suci Allah pada pagi dan petang hari. Aku menghadapkan wajahku kepada Tuhan yang telah menciptakan langit dan bumi dengan segenap kepatuhan dan kepasrahan diri, dan aku bukanlah termasuk orang-orang yang menyekutukan-Nya. Sesungguhnya sholatku, ibadahku, hidup dan matiku hanyalah kepunyaan Allah, Tuhan semesta alam, yang tiada satu pun sekutu bagi-Nya. Dengan semua itulah aku diperintahkan dan aku adalah termasuk orang-orang yang berserah diri (muslim).</p>
+
+
+      <h5 class="mt-3"><b>🌟 Tata Cara</b></h5>
+      <ul>
+        <li>Posisi berdiri tegak menghadap kiblat.</li>
+        <li>Angkat kedua tangan sejajar bahu atau telinga sambil mengucap <b>“Allāhu Akbar”</b>.</li>
+        <li>Tangan kanan diletakkan di atas tangan kiri di dada.</li>
+        <li>Niat dalam hati untuk memulai shalat.</li>
+        <li>Mulai baca Do'a Iftitah didalam hati</li>
+      </ul>
+
+      <div class="text-center mt-4">
+        <button class="btn btn-dark" id="nextBtn">Lanjut ➜ Membaca Al-Fatihah</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+     document.getElementById('nextBtn').addEventListener('click', () => {
+    const progres = JSON.parse(localStorage.getItem('progres_shalat')) || {};
+    progres['takbir'] = true;
+    localStorage.setItem('progres_shalat', JSON.stringify(progres));
+    window.location.href = 'alfatihah.html';
+  });
+  </script>
+
+</body>
+</html>

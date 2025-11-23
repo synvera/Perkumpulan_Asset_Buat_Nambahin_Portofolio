@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <title>Membaca Al-Fatihah | ShalatKu</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600&family=Poppins:wght@400;600&display=swap');
+
+    body {
+      background-color: #f8f9fa;
+      color: #000;
+      font-family: "Poppins", sans-serif;
+    }
+    .container {
+      max-width: 850px;
+    }
+    .card {
+      background-color: #fff;
+      border: none;
+      border-radius: 12px;
+    }
+    .text-center img {
+      width: 300px;
+      margin: 10px 0 20px;
+    }
+    .arabic {
+      font-family: "Noto Sans Arabic", sans-serif;
+      font-size: 25px;
+      line-height: 2;
+      text-align: center;
+      direction: rtl;
+    }
+    .latin, .arti {
+      font-size: 15px;
+      line-height: 1.8;
+    }
+    .btn-outline-dark, .btn-dark {
+      border-radius: 8px;
+    }
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container py-4">
+    <div class="mb-3">
+      <button class="btn btn-outline-dark" onclick="window.location.href='takbir.html'">← Kembali</button>
+    </div>
+
+    <h2 class="text-center mb-4 fw-bold text-dark">📖 <b>Membaca Al-Fatihah</b></h2>
+
+    <div class="card shadow-sm p-4 text-dark">
+      <div class="text-center">
+        <img src="img/solat.png" alt="Membaca Al-Fatihah">
+      </div>
+
+      <p>
+        Surah <b>Al-Fatihah</b> adalah bacaan wajib dalam setiap rakaat shalat. 
+        Surat ini mengandung pujian, pengakuan, dan doa kepada Allah ﷻ.
+      </p>
+
+      <h5 class="mt-3"><b>🕋 Bacaan Surah Al-Fatihah</b></h5>
+      <div class="arabic mt-3">
+        -بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ<br>
+        -الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ<br>
+        -الرَّحْمَـٰنِ الرَّحِيمِ<br>
+        -مَالِكِ يَوْمِ الدِّينِ<br>
+        -إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ<br>
+        -اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ<br>
+        -صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ<br>
+        -غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ
+      </div>
+
+      <h5 class="mt-4"><b>🔤 Latin</b></h5>
+      <p class="latin">
+        Bismillāhir-raḥmānir-raḥīm<br>
+        Al-ḥamdu lillāhi rabbil-‘ālamīn<br>
+        Ar-raḥmānir-raḥīm<br>
+        Māliki yaumid-dīn<br>
+        Iyyāka na‘budu wa iyyāka nasta‘īn<br>
+        Ihdinaṣ-ṣirāṭal-mustaqīm<br>
+        Ṣirāṭallażīna an‘amta ‘alaihim ghairil-maghdhūbi ‘alaihim walad-dhāllīn
+      </p>
+
+      <h5 class="mt-4"><b>🌟 Artinya</b></h5>
+      <p class="arti">
+        Dengan nama Allah Yang Maha Pengasih, Maha Penyayang.<br>
+        Segala puji bagi Allah, Tuhan seluruh alam.<br>
+        Yang Maha Pengasih, Maha Penyayang.<br>
+        Yang Menguasai hari pembalasan.<br>
+        Hanya kepada-Mu kami menyembah dan hanya kepada-Mu kami memohon pertolongan.<br>
+        Tunjukilah kami jalan yang lurus,<br>
+        (yaitu) jalan orang-orang yang telah Engkau beri nikmat, bukan jalan mereka yang dimurkai, dan bukan pula jalan mereka yang sesat.
+      </p>
+
+      <h5 class="mt-4"><b>Setelah membaca alfatihah, lalu kalian bisa membaca surat pendek yang lainnya seperti al-falaq atau an-nas</b></h5>
+
+      <div class="text-center mt-4">
+        <button class="btn btn-dark" id="nextBtn">Lanjut ➜ Rukuk</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const langkahSekarang = 'alfatihah';
+    const halamanTujuan = 'rukuk.html';
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      const progres = JSON.parse(localStorage.getItem('progres_shalat')) || {};
+      progres['alfatihah'] = true;
+      localStorage.setItem('progres_shalat', JSON.stringify(progres));
+      window.location.href = halamanTujuan;
+    });
+  </script>
+
+</body>
+</html>
