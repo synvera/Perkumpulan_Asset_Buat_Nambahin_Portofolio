@@ -1,0 +1,1736 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPP Financial Management System</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #000000;
+      --bg-secondary: #0a0a0a;
+      --bg-card: #121212;
+      --border-color: #1a1a1a;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.6);
+      --accent-primary: #ffffff;
+      --accent-secondary: #1a1a1a;
+      --shadow: rgba(0, 0, 0, 0.5);
+    }
+
+    body.light-mode {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f5f5f5;
+      --bg-card: #ececec;
+      --border-color: #e0e0e0;
+      --text-primary: #000000;
+      --text-secondary: rgba(0, 0, 0, 0.6);
+      --accent-primary: #000000;
+      --accent-secondary: #e0e0e0;
+      --shadow: rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      box-sizing: border-box;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1400px;
+      height: 100%;
+      display: flex;
+      position: relative;
+    }
+
+    /* Mobile Layout */
+    .phone-container {
+      width: 100%;
+      max-width: 400px;
+      height: 100%;
+      min-height: 700px;
+      background: var(--bg-secondary);
+      border-radius: 40px;
+      padding: 20px;
+      box-shadow: 0 30px 60px var(--shadow);
+      position: relative;
+      border: 1px solid var(--border-color);
+      margin: 0 auto;
+      transition: all 0.3s ease;
+    }
+
+    /* Desktop Layout */
+    @media (min-width: 768px) {
+      .app-container {
+        gap: 0;
+      }
+
+      .phone-container {
+        max-width: 100%;
+        border-radius: 20px;
+        display: flex;
+        min-height: 800px;
+      }
+
+      .desktop-sidebar {
+        display: flex !important;
+        flex-direction: column;
+        width: 280px;
+        border-right: 1px solid var(--border-color);
+        padding: 30px 20px;
+        flex-shrink: 0;
+      }
+
+      .desktop-main {
+        flex: 1;
+        padding: 30px;
+        overflow-y: auto;
+      }
+
+      .bottom-nav {
+        display: none !important;
+      }
+    }
+
+    .desktop-sidebar {
+      display: none;
+    }
+
+    .theme-selector {
+      display: flex;
+      gap: 0;
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      padding: 4px;
+      border: 1px solid var(--border-color);
+    }
+
+    .theme-option {
+      flex: 1;
+      padding: 12px 20px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 300;
+      letter-spacing: 1px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      background: transparent;
+      color: var(--text-secondary);
+    }
+
+    .theme-option.active {
+      background: var(--accent-primary);
+      color: var(--bg-primary);
+      font-weight: 400;
+    }
+
+    .theme-option:hover:not(.active) {
+      background: var(--bg-card);
+      color: var(--text-primary);
+    }
+
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.5px;
+      margin-bottom: 15px;
+      opacity: 0.7;
+    }
+
+    @media (min-width: 768px) {
+      .status-bar {
+        display: none;
+      }
+    }
+
+    .app-header {
+      text-align: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .app-title {
+      font-size: 20px;
+      font-weight: 200;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 30px;
+    }
+
+    .sidebar-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 14px 16px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: 1px;
+    }
+
+    .sidebar-nav-item:hover {
+      background: var(--bg-card);
+      border-color: var(--border-color);
+    }
+
+    .sidebar-nav-item.active {
+      background: var(--accent-primary);
+      color: var(--bg-primary);
+      font-weight: 400;
+    }
+
+    .sidebar-nav-item .icon {
+      font-size: 20px;
+    }
+
+    .page {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 15px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 15px var(--shadow);
+      transition: all 0.3s ease;
+    }
+
+    @media (min-width: 768px) {
+      .card {
+        padding: 30px;
+        margin-bottom: 20px;
+      }
+    }
+
+    .card-title {
+      font-size: 12px;
+      font-weight: 300;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      opacity: 0.6;
+      margin-bottom: 12px;
+    }
+
+    .card-value {
+      font-size: 32px;
+      font-weight: 200;
+      letter-spacing: 1px;
+    }
+
+    @media (min-width: 768px) {
+      .card-value {
+        font-size: 42px;
+      }
+    }
+
+    .quick-menu {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .quick-menu {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+      }
+    }
+
+    .menu-item {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      border: 1px solid var(--border-color);
+      transition: all 0.3s ease;
+    }
+
+    .menu-item:hover {
+      background: var(--bg-secondary);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--shadow);
+    }
+
+    .menu-icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .menu-text {
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .input-group {
+      margin-bottom: 18px;
+    }
+
+    .input-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      opacity: 0.7;
+    }
+
+    .input-field, .select-field {
+      width: 100%;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px;
+      color: var(--text-primary);
+      font-size: 14px;
+      font-weight: 300;
+      transition: all 0.3s ease;
+    }
+
+    .input-field:focus, .select-field:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 2px var(--bg-card);
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--accent-primary);
+      color: var(--bg-primary);
+      border: none;
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--shadow);
+    }
+
+    .btn-secondary {
+      width: 100%;
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-card);
+    }
+
+    .btn-danger {
+      background: var(--text-primary);
+      color: var(--bg-primary);
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-danger:hover {
+      opacity: 0.8;
+    }
+
+    .transaction-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border-color);
+      gap: 10px;
+    }
+
+    .transaction-item:last-child {
+      border-bottom: none;
+    }
+
+    .transaction-info {
+      flex: 1;
+    }
+
+    .transaction-date {
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 1px;
+      opacity: 0.6;
+      margin-bottom: 4px;
+    }
+
+    .transaction-month {
+      font-size: 14px;
+      font-weight: 300;
+    }
+
+    .transaction-amount {
+      font-size: 16px;
+      font-weight: 300;
+      margin-right: 12px;
+    }
+
+    .transaction-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .status-paid {
+      background: var(--accent-primary);
+      color: var(--bg-primary);
+    }
+
+    .status-unpaid {
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+    }
+
+    .profile-header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .profile-photo {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      border: 2px solid var(--accent-primary);
+      margin: 0 auto 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+    }
+
+    .profile-name {
+      font-size: 20px;
+      font-weight: 300;
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+    }
+
+    .profile-class {
+      font-size: 12px;
+      font-weight: 300;
+      letter-spacing: 1px;
+      opacity: 0.6;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .info-label {
+      font-size: 12px;
+      font-weight: 300;
+      letter-spacing: 1px;
+      opacity: 0.6;
+    }
+
+    .info-value {
+      font-size: 12px;
+      font-weight: 300;
+    }
+
+    .chart-container {
+      height: 180px;
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-around;
+      padding: 20px 10px 10px;
+      border: 1px solid var(--border-color);
+    }
+
+    @media (min-width: 768px) {
+      .chart-container {
+        height: 250px;
+      }
+    }
+
+    .chart-bar {
+      width: 25px;
+      background: linear-gradient(to top, var(--accent-primary), var(--text-secondary));
+      border-radius: 4px 4px 0 0;
+      transition: all 0.3s ease;
+    }
+
+    @media (min-width: 768px) {
+      .chart-bar {
+        width: 40px;
+      }
+    }
+
+    .chart-bar:hover {
+      opacity: 0.8;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+
+    @media (min-width: 768px) {
+      .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+      }
+    }
+
+    .stat-card {
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid var(--border-color);
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 200;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      opacity: 0.6;
+    }
+
+    .notification-item {
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border-left: 3px solid var(--accent-primary);
+    }
+
+    .notification-title {
+      font-size: 13px;
+      font-weight: 300;
+      margin-bottom: 6px;
+    }
+
+    .notification-text {
+      font-size: 11px;
+      font-weight: 300;
+      opacity: 0.7;
+      line-height: 1.5;
+    }
+
+    .notification-time {
+      font-size: 10px;
+      opacity: 0.5;
+      margin-top: 8px;
+    }
+
+    .setting-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .setting-item:last-child {
+      border-bottom: none;
+    }
+
+    .setting-label {
+      font-size: 13px;
+      font-weight: 300;
+      letter-spacing: 1px;
+    }
+
+    .toggle-switch {
+      width: 50px;
+      height: 26px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 13px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .toggle-switch.active {
+      background: var(--accent-primary);
+    }
+
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      background: var(--text-primary);
+      border-radius: 50%;
+      top: 1px;
+      left: 1px;
+      transition: all 0.3s ease;
+    }
+
+    .toggle-switch.active::after {
+      background: var(--bg-primary);
+      left: 26px;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-card);
+      border-radius: 30px;
+      padding: 12px 20px;
+      display: flex;
+      gap: 30px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 10px 30px var(--shadow);
+    }
+
+    .nav-item {
+      cursor: pointer;
+      font-size: 22px;
+      opacity: 0.4;
+      transition: all 0.3s ease;
+    }
+
+    .nav-item.active {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+
+    .nav-item:hover {
+      opacity: 0.7;
+    }
+
+    .month-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .month-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+      }
+    }
+
+    .month-item {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+    }
+
+    .month-item:hover {
+      background: var(--bg-card);
+    }
+
+    .month-item.selected {
+      background: var(--accent-primary);
+      color: var(--bg-primary);
+      border-color: var(--accent-primary);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-secondary);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(to right, var(--accent-primary), var(--text-secondary));
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    .toast {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent-primary);
+      color: var(--bg-primary);
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 300;
+      letter-spacing: 1px;
+      z-index: 1000;
+      animation: slideDown 0.3s ease;
+      box-shadow: 0 6px 20px var(--shadow);
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    .filter-controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .filter-controls .input-group {
+      flex: 1;
+      min-width: 150px;
+      margin-bottom: 0;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      opacity: 0.6;
+    }
+
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+
+    .empty-state-text {
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: 1px;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 300;
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+    }
+
+    .modal-text {
+      font-size: 13px;
+      font-weight: 300;
+      opacity: 0.7;
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .modal-buttons button {
+      flex: 1;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="app-container">
+   <div class="phone-container"><!-- Desktop Sidebar -->
+    <div class="desktop-sidebar">
+     <div class="app-header">
+      <div class="app-title" id="appTitle">
+       SPP FINANCE MANAGER
+      </div>
+     </div>
+     <nav class="sidebar-nav">
+      <div class="sidebar-nav-item active" onclick="navigateTo('home')"><span class="icon">🏠</span> <span>Home</span>
+      </div>
+      <div class="sidebar-nav-item" onclick="navigateTo('payment')"><span class="icon">💳</span> <span>Pay SPP</span>
+      </div>
+      <div class="sidebar-nav-item" onclick="navigateTo('dashboard')"><span class="icon">📊</span> <span>Dashboard</span>
+      </div>
+      <div class="sidebar-nav-item" onclick="navigateTo('history')"><span class="icon">📋</span> <span>History</span>
+      </div>
+      <div class="sidebar-nav-item" onclick="navigateTo('profile')"><span class="icon">👤</span> <span>Profile</span>
+      </div>
+      <div class="sidebar-nav-item" onclick="navigateTo('notifications')"><span class="icon">🔔</span> <span>Notifications</span>
+      </div>
+      <div class="sidebar-nav-item" onclick="navigateTo('settings')"><span class="icon">⚙️</span> <span>Settings</span>
+      </div>
+     </nav>
+    </div><!-- Main Content Area -->
+    <div class="desktop-main">
+     <div class="status-bar"><span>9:41</span> <span>⚡ 100%</span>
+     </div>
+     <div class="app-header" style="display: block;">
+      <div class="app-title" id="appTitleMobile">
+       SPP FINANCE MANAGER
+      </div>
+     </div><!-- Home Page -->
+     <div class="page active" id="homePage">
+      <div class="card">
+       <div class="card-title" id="totalSppLabel">
+        Total SPP Balance
+       </div>
+       <div class="card-value" id="totalSppValue">
+        Rp 6.500.000
+       </div>
+       <div class="progress-bar">
+        <div class="progress-fill" id="totalProgressBar" style="width: 0%"></div>
+       </div>
+      </div>
+      <div class="quick-menu">
+       <div class="menu-item" onclick="navigateTo('payment')">
+        <div class="menu-icon">
+         💳
+        </div>
+        <div class="menu-text">
+         Pay SPP
+        </div>
+       </div>
+       <div class="menu-item" onclick="navigateTo('dashboard')">
+        <div class="menu-icon">
+         📊
+        </div>
+        <div class="menu-text">
+         Dashboard
+        </div>
+       </div>
+       <div class="menu-item" onclick="navigateTo('history')">
+        <div class="menu-icon">
+         📋
+        </div>
+        <div class="menu-text">
+         History
+        </div>
+       </div>
+       <div class="menu-item" onclick="navigateTo('profile')">
+        <div class="menu-icon">
+         👤
+        </div>
+        <div class="menu-text">
+         Profile
+        </div>
+       </div>
+      </div>
+      <div class="card">
+       <div class="card-title" id="lastPaymentLabel">
+        Last Payment
+       </div>
+       <div id="lastPaymentContent">
+        <div class="empty-state">
+         <div class="empty-state-icon">
+          📭
+         </div>
+         <div class="empty-state-text">
+          No payments yet
+         </div>
+        </div>
+       </div>
+      </div>
+     </div><!-- Payment Page -->
+     <div class="page" id="paymentPage">
+      <div class="card">
+       <div class="card-title">
+        Student Information
+       </div>
+       <div class="info-row"><span class="info-label">Student Name</span> <span class="info-value" id="studentNameDisplay">Alex Johnson</span>
+       </div>
+       <div class="info-row"><span class="info-label">Class</span> <span class="info-value">Grade 10-A</span>
+       </div>
+       <div class="info-row"><span class="info-label">NIS</span> <span class="info-value">2024001234</span>
+       </div>
+      </div>
+      <div class="card">
+       <div class="card-title">
+        Select Month
+       </div>
+       <div class="month-grid">
+        <div class="month-item" onclick="selectMonth(this)" data-month="January">
+         JAN
+        </div>
+        <div class="month-item" onclick="selectMonth(this)" data-month="February">
+         FEB
+        </div>
+        <div class="month-item" onclick="selectMonth(this)" data-month="March">
+         MAR
+        </div>
+        <div class="month-item" onclick="selectMonth(this)" data-month="April">
+         APR
+        </div>
+        <div class="month-item" onclick="selectMonth(this)" data-month="May">
+         MAY
+        </div>
+        <div class="month-item" onclick="selectMonth(this)" data-month="June">
+         JUN
+        </div>
+        <div class="month-item" onclick="selectMonth(this)" data-month="July">
+         JUL
+        </div>
+        <div class="month-item" onclick="selectMonth(this)" data-month="August">
+         AUG
+        </div>
+        <div class="month-item" onclick="selectMonth(this)" data-month="September">
+         SEP
+        </div>
+        <div class="month-item" onclick="selectMonth(this)" data-month="October">
+         OCT
+        </div>
+        <div class="month-item" onclick="selectMonth(this)" data-month="November">
+         NOV
+        </div>
+        <div class="month-item" onclick="selectMonth(this)" data-month="December">
+         DEC
+        </div>
+       </div>
+      </div>
+      <div class="card">
+       <div class="input-group"><label for="paymentAmount" class="input-label">Payment Amount (IDR)</label> <input type="text" id="paymentAmount" class="input-field" placeholder="Rp 500.000" value="500000">
+       </div><button class="btn-primary" onclick="confirmPayment()">Confirm Payment</button>
+      </div>
+     </div><!-- Dashboard Page -->
+     <div class="page" id="dashboardPage">
+      <div class="card">
+       <div class="card-title">
+        Monthly Payment Chart
+       </div>
+       <div class="chart-container" id="paymentChart">
+        <div class="chart-bar" style="height: 0%"></div>
+        <div class="chart-bar" style="height: 0%"></div>
+        <div class="chart-bar" style="height: 0%"></div>
+        <div class="chart-bar" style="height: 0%"></div>
+        <div class="chart-bar" style="height: 0%"></div>
+        <div class="chart-bar" style="height: 0%"></div>
+        <div class="chart-bar" style="height: 0%"></div>
+        <div class="chart-bar" style="height: 0%"></div>
+        <div class="chart-bar" style="height: 0%"></div>
+        <div class="chart-bar" style="height: 0%"></div>
+        <div class="chart-bar" style="height: 0%"></div>
+        <div class="chart-bar" style="height: 0%"></div>
+       </div>
+      </div>
+      <div class="stats-grid">
+       <div class="stat-card">
+        <div class="stat-value" id="monthsPaid">
+         0/12
+        </div>
+        <div class="stat-label">
+         Months Paid
+        </div>
+       </div>
+       <div class="stat-card">
+        <div class="stat-value" id="totalPaid">
+         Rp 0
+        </div>
+        <div class="stat-label">
+         Total Paid
+        </div>
+       </div>
+       <div class="stat-card">
+        <div class="stat-value" id="totalRemaining">
+         Rp 6.500.000
+        </div>
+        <div class="stat-label">
+         Remaining
+        </div>
+       </div>
+       <div class="stat-card">
+        <div class="stat-value" id="progressPercent">
+         0%
+        </div>
+        <div class="stat-label">
+         Progress
+        </div>
+       </div>
+      </div>
+      <div class="card">
+       <div class="card-title">
+        Payment Progress
+       </div>
+       <div class="progress-bar">
+        <div class="progress-fill" id="dashboardProgressBar" style="width: 0%"></div>
+       </div>
+      </div>
+     </div><!-- History Page -->
+     <div class="page" id="historyPage">
+      <div class="card">
+       <div class="card-title">
+        Transaction History
+       </div>
+       <div class="filter-controls">
+        <div class="input-group"><label for="filterMonth" class="input-label">Filter by Month</label> <select id="filterMonth" class="select-field" onchange="filterTransactions()"> <option value="all">All Months</option> <option value="January">January</option> <option value="February">February</option> <option value="March">March</option> <option value="April">April</option> <option value="May">May</option> <option value="June">June</option> <option value="July">July</option> <option value="August">August</option> <option value="September">September</option> <option value="October">October</option> <option value="November">November</option> <option value="December">December</option> </select>
+        </div>
+        <div class="input-group"><label for="filterStatus" class="input-label">Filter by Status</label> <select id="filterStatus" class="select-field" onchange="filterTransactions()"> <option value="all">All Status</option> <option value="paid">Paid</option> <option value="unpaid">Unpaid</option> </select>
+        </div>
+       </div>
+       <div id="transactionList">
+        <div class="empty-state">
+         <div class="empty-state-icon">
+          📋
+         </div>
+         <div class="empty-state-text">
+          No transactions found
+         </div>
+        </div>
+       </div>
+      </div>
+     </div><!-- Profile Page -->
+     <div class="page" id="profilePage">
+      <div class="profile-header">
+       <div class="profile-photo">
+        👤
+       </div>
+       <div class="profile-name" id="studentNameProfile">
+        Alex Johnson
+       </div>
+       <div class="profile-class">
+        Grade 10-A
+       </div>
+      </div>
+      <div class="card">
+       <div class="card-title">
+        Student Details
+       </div>
+       <div class="info-row"><span class="info-label">NIS</span> <span class="info-value">2024001234</span>
+       </div>
+       <div class="info-row"><span class="info-label">Class</span> <span class="info-value">Grade 10-A</span>
+       </div>
+       <div class="info-row"><span class="info-label">Academic Year</span> <span class="info-value">2024/2025</span>
+       </div>
+      </div>
+      <div class="card">
+       <div class="card-title">
+        Payment Summary
+       </div>
+       <div class="info-row"><span class="info-label">Total SPP</span> <span class="info-value">Rp 6.500.000</span>
+       </div>
+       <div class="info-row"><span class="info-label">Amount Paid</span> <span class="info-value" id="profileAmountPaid">Rp 0</span>
+       </div>
+       <div class="info-row"><span class="info-label">Remaining</span> <span class="info-value" id="profileRemaining">Rp 6.500.000</span>
+       </div>
+       <div class="info-row"><span class="info-label">Next Due Date</span> <span class="info-value" id="profileNextDue">-</span>
+       </div>
+      </div>
+     </div><!-- Notifications Page -->
+     <div class="page" id="notificationsPage">
+      <div id="notificationsList">
+       <div class="notification-item">
+        <div class="notification-title">
+         Welcome to SPP Manager
+        </div>
+        <div class="notification-text">
+         Start managing your school payments efficiently. Make your first payment to get started!
+        </div>
+        <div class="notification-time">
+         Now
+        </div>
+       </div>
+      </div>
+     </div><!-- Settings Page -->
+     <div class="page" id="settingsPage">
+      <div class="card">
+       <div class="card-title">
+        Appearance
+       </div>
+       <div class="setting-item"><span class="setting-label">Theme</span>
+       </div>
+       <div class="theme-selector">
+        <div class="theme-option active" id="darkModeOption" onclick="setTheme('dark')">
+         Dark Mode
+        </div>
+        <div class="theme-option" id="lightModeOption" onclick="setTheme('light')">
+         Light Mode
+        </div>
+       </div>
+      </div>
+      <div class="card">
+       <div class="card-title">
+        Account Settings
+       </div>
+       <div class="setting-item"><span class="setting-label">Notifications</span>
+        <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+       </div>
+       <div class="setting-item"><span class="setting-label">Payment Reminders</span>
+        <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+       </div>
+       <div class="setting-item"><span class="setting-label">Email Alerts</span>
+        <div class="toggle-switch" onclick="toggleSwitch(this)"></div>
+       </div>
+      </div>
+      <div class="card">
+       <div class="card-title">
+        App Preferences
+       </div>
+       <div class="setting-item"><span class="setting-label">Auto-Pay</span>
+        <div class="toggle-switch" onclick="toggleSwitch(this)"></div>
+       </div>
+       <div class="setting-item"><span class="setting-label">Biometric Login</span>
+        <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+       </div>
+       <div class="setting-item"><span class="setting-label">Save Payment Method</span>
+        <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+       </div>
+      </div>
+      <div class="card">
+       <div class="card-title">
+        Data Management
+       </div><button class="btn-secondary" onclick="showClearDataModal()">Clear All Payment Data</button>
+      </div>
+      <div class="card">
+       <div class="card-title">
+        About
+       </div>
+       <div class="info-row"><span class="info-label">Version</span> <span class="info-value">2.0.0</span>
+       </div>
+       <div class="info-row"><span class="info-label">Build</span> <span class="info-value">2024.12.20</span>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="bottom-nav">
+     <div class="nav-item active" onclick="navigateTo('home')">
+      🏠
+     </div>
+     <div class="nav-item" onclick="navigateTo('payment')">
+      💳
+     </div>
+     <div class="nav-item" onclick="navigateTo('dashboard')">
+      📊
+     </div>
+     <div class="nav-item" onclick="navigateTo('history')">
+      📋
+     </div>
+     <div class="nav-item" onclick="navigateTo('profile')">
+      👤
+     </div>
+     <div class="nav-item" onclick="navigateTo('notifications')">
+      🔔
+     </div>
+     <div class="nav-item" onclick="navigateTo('settings')">
+      ⚙️
+     </div>
+    </div>
+   </div>
+  </div><!-- Modal for confirmations -->
+  <div class="modal-overlay" id="clearDataModal">
+   <div class="modal-content">
+    <div class="modal-title">
+     Clear All Data?
+    </div>
+    <div class="modal-text">
+     This will permanently delete all your payment records. This action cannot be undone.
+    </div>
+    <div class="modal-buttons"><button class="btn-secondary" onclick="hideClearDataModal()">Cancel</button> <button class="btn-primary" onclick="clearAllData()">Clear Data</button>
+    </div>
+   </div>
+  </div>
+  <div class="modal-overlay" id="deleteTransactionModal">
+   <div class="modal-content">
+    <div class="modal-title">
+     Delete Transaction?
+    </div>
+    <div class="modal-text">
+     Are you sure you want to delete this payment record?
+    </div>
+    <div class="modal-buttons"><button class="btn-secondary" onclick="hideDeleteModal()">Cancel</button> <button class="btn-primary" onclick="confirmDelete()">Delete</button>
+    </div>
+   </div>
+  </div>
+  <script>
+    const TOTAL_SPP = 6500000;
+    let selectedTransactionId = null;
+
+    const defaultConfig = {
+      app_title: 'SPP FINANCE MANAGER',
+      student_name: 'Alex Johnson',
+      total_spp_label: 'Total SPP Balance',
+      last_payment_label: 'Last Payment'
+    };
+
+    // Initialize app
+    function initializeApp() {
+      loadTheme();
+      updateAllDisplays();
+      renderTransactionHistory();
+      updateDashboard();
+    }
+
+    // Theme management
+    function setTheme(theme) {
+      const body = document.body;
+      const darkOption = document.getElementById('darkModeOption');
+      const lightOption = document.getElementById('lightModeOption');
+
+      if (theme === 'light') {
+        body.classList.add('light-mode');
+        lightOption.classList.add('active');
+        darkOption.classList.remove('active');
+      } else {
+        body.classList.remove('light-mode');
+        darkOption.classList.add('active');
+        lightOption.classList.remove('active');
+      }
+      
+      localStorage.setItem('theme', theme);
+      showToast(`Switched to ${theme === 'light' ? 'Light' : 'Dark'} Mode`);
+    }
+
+    function loadTheme() {
+      const theme = localStorage.getItem('theme') || 'dark';
+      const body = document.body;
+      const darkOption = document.getElementById('darkModeOption');
+      const lightOption = document.getElementById('lightModeOption');
+
+      if (theme === 'light') {
+        body.classList.add('light-mode');
+        if (lightOption) lightOption.classList.add('active');
+        if (darkOption) darkOption.classList.remove('active');
+      } else {
+        body.classList.remove('light-mode');
+        if (darkOption) darkOption.classList.add('active');
+        if (lightOption) lightOption.classList.remove('active');
+      }
+    }
+
+    // Navigation
+    function navigateTo(page) {
+      const pages = document.querySelectorAll('.page');
+      const navItems = document.querySelectorAll('.nav-item');
+      const sidebarItems = document.querySelectorAll('.sidebar-nav-item');
+
+      pages.forEach(p => p.classList.remove('active'));
+      navItems.forEach(n => n.classList.remove('active'));
+      sidebarItems.forEach(s => s.classList.remove('active'));
+
+      const pageMap = {
+        'home': 'homePage',
+        'payment': 'paymentPage',
+        'dashboard': 'dashboardPage',
+        'history': 'historyPage',
+        'profile': 'profilePage',
+        'notifications': 'notificationsPage',
+        'settings': 'settingsPage'
+      };
+
+      const targetPage = document.getElementById(pageMap[page]);
+      if (targetPage) {
+        targetPage.classList.add('active');
+      }
+
+      const navIndex = ['home', 'payment', 'dashboard', 'history', 'profile', 'notifications', 'settings'].indexOf(page);
+      if (navIndex >= 0) {
+        navItems[navIndex].classList.add('active');
+        sidebarItems[navIndex].classList.add('active');
+      }
+
+      if (page === 'dashboard') {
+        updateDashboard();
+      } else if (page === 'history') {
+        renderTransactionHistory();
+      }
+    }
+
+    // Payment functionality
+    function selectMonth(element) {
+      const months = document.querySelectorAll('.month-item');
+      months.forEach(m => m.classList.remove('selected'));
+      element.classList.add('selected');
+    }
+
+    function confirmPayment() {
+      const selectedMonth = document.querySelector('.month-item.selected');
+      const amountInput = document.getElementById('paymentAmount');
+      
+      if (!selectedMonth) {
+        showToast('Please select a month');
+        return;
+      }
+
+      const amount = parseInt(amountInput.value.replace(/\D/g, ''));
+      if (!amount || amount <= 0) {
+        showToast('Please enter a valid amount');
+        return;
+      }
+
+      const month = selectedMonth.getAttribute('data-month');
+      
+      // Save to localStorage
+      const payment = {
+        id: Date.now().toString(),
+        studentName: document.getElementById('studentNameDisplay').textContent,
+        class: 'Grade 10-A',
+        month: month,
+        amount: amount,
+        date: new Date().toISOString(),
+        status: 'paid'
+      };
+
+      savePayment(payment);
+      
+      // Clear selection
+      selectedMonth.classList.remove('selected');
+      amountInput.value = '500000';
+      
+      showToast('Payment saved successfully!');
+      updateAllDisplays();
+      
+      setTimeout(() => navigateTo('home'), 1500);
+    }
+
+    function savePayment(payment) {
+      let payments = getPayments();
+      payments.push(payment);
+      localStorage.setItem('spp_payments', JSON.stringify(payments));
+      
+      // Add notification
+      addNotification('Payment Confirmed', `Your ${payment.month} payment of ${formatRupiah(payment.amount)} has been successfully processed.`);
+    }
+
+    function getPayments() {
+      const data = localStorage.getItem('spp_payments');
+      return data ? JSON.parse(data) : [];
+    }
+
+    function deletePayment(id) {
+      let payments = getPayments();
+      payments = payments.filter(p => p.id !== id);
+      localStorage.setItem('spp_payments', JSON.stringify(payments));
+      updateAllDisplays();
+      renderTransactionHistory();
+      updateDashboard();
+      showToast('Payment deleted successfully');
+    }
+
+    // Display updates
+    function updateAllDisplays() {
+      updateHomeDisplay();
+      updateProfileDisplay();
+      updateDashboard();
+    }
+
+    function updateHomeDisplay() {
+      const payments = getPayments();
+      const totalPaid = payments.reduce((sum, p) => sum + p.amount, 0);
+      const remaining = TOTAL_SPP - totalPaid;
+      const progress = (totalPaid / TOTAL_SPP) * 100;
+
+      document.getElementById('totalSppValue').textContent = formatRupiah(TOTAL_SPP);
+      document.getElementById('totalProgressBar').style.width = progress + '%';
+
+      // Last payment
+      const lastPaymentContent = document.getElementById('lastPaymentContent');
+      if (payments.length > 0) {
+        const lastPayment = payments[payments.length - 1];
+        lastPaymentContent.innerHTML = `
+          <div class="transaction-item">
+            <div class="transaction-info">
+              <div class="transaction-date">${formatDate(lastPayment.date)}</div>
+              <div class="transaction-month">${lastPayment.month} Payment</div>
+            </div>
+            <div class="transaction-amount">${formatRupiah(lastPayment.amount)}</div>
+            <span class="status-badge status-paid">Paid</span>
+          </div>
+        `;
+      } else {
+        lastPaymentContent.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📭</div>
+            <div class="empty-state-text">No payments yet</div>
+          </div>
+        `;
+      }
+    }
+
+    function updateProfileDisplay() {
+      const payments = getPayments();
+      const totalPaid = payments.reduce((sum, p) => sum + p.amount, 0);
+      const remaining = TOTAL_SPP - totalPaid;
+
+      document.getElementById('profileAmountPaid').textContent = formatRupiah(totalPaid);
+      document.getElementById('profileRemaining').textContent = formatRupiah(remaining);
+
+      // Next due date (find first unpaid month)
+      const paidMonths = payments.map(p => p.month);
+      const allMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      const nextUnpaidMonth = allMonths.find(m => !paidMonths.includes(m));
+      
+      document.getElementById('profileNextDue').textContent = nextUnpaidMonth ? `${nextUnpaidMonth} 15, 2025` : 'All paid';
+    }
+
+    function updateDashboard() {
+      const payments = getPayments();
+      const totalPaid = payments.reduce((sum, p) => sum + p.amount, 0);
+      const remaining = TOTAL_SPP - totalPaid;
+      const progress = (totalPaid / TOTAL_SPP) * 100;
+
+      document.getElementById('monthsPaid').textContent = `${payments.length}/12`;
+      document.getElementById('totalPaid').textContent = formatRupiah(totalPaid);
+      document.getElementById('totalRemaining').textContent = formatRupiah(remaining);
+      document.getElementById('progressPercent').textContent = Math.round(progress) + '%';
+      document.getElementById('dashboardProgressBar').style.width = progress + '%';
+
+      // Update chart
+      const allMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      const chartBars = document.querySelectorAll('#paymentChart .chart-bar');
+      
+      chartBars.forEach((bar, index) => {
+        const monthPayment = payments.find(p => p.month === allMonths[index]);
+        if (monthPayment) {
+          const heightPercent = (monthPayment.amount / 1000000) * 100; // Assuming max 1M per month
+          bar.style.height = Math.min(heightPercent, 100) + '%';
+        } else {
+          bar.style.height = '0%';
+        }
+      });
+    }
+
+    function renderTransactionHistory() {
+      const payments = getPayments();
+      const transactionList = document.getElementById('transactionList');
+
+      if (payments.length === 0) {
+        transactionList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📋</div>
+            <div class="empty-state-text">No transactions found</div>
+          </div>
+        `;
+        return;
+      }
+
+      // Sort by date (newest first)
+      const sortedPayments = [...payments].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      transactionList.innerHTML = sortedPayments.map(payment => `
+        <div class="transaction-item" data-month="${payment.month}" data-status="${payment.status}">
+          <div class="transaction-info">
+            <div class="transaction-date">${formatDate(payment.date)}</div>
+            <div class="transaction-month">${payment.month} Payment</div>
+          </div>
+          <div class="transaction-amount">${formatRupiah(payment.amount)}</div>
+          <div class="transaction-actions">
+            <span class="status-badge status-${payment.status}">${payment.status}</span>
+            <button class="btn-danger" onclick="showDeleteModal('${payment.id}')">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterTransactions() {
+      const monthFilter = document.getElementById('filterMonth').value;
+      const statusFilter = document.getElementById('filterStatus').value;
+      const items = document.querySelectorAll('.transaction-item');
+
+      items.forEach(item => {
+        const month = item.getAttribute('data-month');
+        const status = item.getAttribute('data-status');
+        
+        const monthMatch = monthFilter === 'all' || month === monthFilter;
+        const statusMatch = statusFilter === 'all' || status === statusFilter;
+        
+        item.style.display = (monthMatch && statusMatch) ? 'flex' : 'none';
+      });
+    }
+
+    // Notifications
+    function addNotification(title, text) {
+      const notifications = getNotifications();
+      notifications.unshift({
+        id: Date.now().toString(),
+        title: title,
+        text: text,
+        time: new Date().toISOString()
+      });
+      localStorage.setItem('spp_notifications', JSON.stringify(notifications.slice(0, 10))); // Keep last 10
+      renderNotifications();
+    }
+
+    function getNotifications() {
+      const data = localStorage.getItem('spp_notifications');
+      return data ? JSON.parse(data) : [];
+    }
+
+    function renderNotifications() {
+      const notifications = getNotifications();
+      const notificationsList = document.getElementById('notificationsList');
+      
+      if (notifications.length === 0) {
+        notificationsList.innerHTML = `
+          <div class="notification-item">
+            <div class="notification-title">Welcome to SPP Manager</div>
+            <div class="notification-text">Start managing your school payments efficiently. Make your first payment to get started!</div>
+            <div class="notification-time">Now</div>
+          </div>
+        `;
+        return;
+      }
+
+      notificationsList.innerHTML = notifications.map(notif => `
+        <div class="notification-item">
+          <div class="notification-title">${notif.title}</div>
+          <div class="notification-text">${notif.text}</div>
+          <div class="notification-time">${formatTimeAgo(notif.time)}</div>
+        </div>
+      `).join('');
+    }
+
+    // Modals
+    function showClearDataModal() {
+      document.getElementById('clearDataModal').classList.add('active');
+    }
+
+    function hideClearDataModal() {
+      document.getElementById('clearDataModal').classList.remove('active');
+    }
+
+    function showDeleteModal(id) {
+      selectedTransactionId = id;
+      document.getElementById('deleteTransactionModal').classList.add('active');
+    }
+
+    function hideDeleteModal() {
+      selectedTransactionId = null;
+      document.getElementById('deleteTransactionModal').classList.remove('active');
+    }
+
+    function confirmDelete() {
+      if (selectedTransactionId) {
+        deletePayment(selectedTransactionId);
+        hideDeleteModal();
+      }
+    }
+
+    function clearAllData() {
+      localStorage.removeItem('spp_payments');
+      localStorage.removeItem('spp_notifications');
+      updateAllDisplays();
+      renderTransactionHistory();
+      updateDashboard();
+      renderNotifications();
+      hideClearDataModal();
+      showToast('All data cleared successfully');
+    }
+
+    // Utilities
+    function formatRupiah(amount) {
+      return 'Rp ' + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function formatTimeAgo(dateString) {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMs / 3600000);
+      const diffDays = Math.floor(diffMs / 86400000);
+
+      if (diffMins < 1) return 'Just now';
+      if (diffMins < 60) return `${diffMins} min ago`;
+      if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+      if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+      return formatDate(dateString);
+    }
+
+    function toggleSwitch(element) {
+      element.classList.toggle('active');
+    }
+
+    function showToast(message) {
+      const existingToast = document.querySelector('.toast');
+      if (existingToast) {
+        existingToast.remove();
+      }
+
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // Element SDK integration
+    async function onConfigChange(newConfig) {
+      const appTitle = document.getElementById('appTitle');
+      const appTitleMobile = document.getElementById('appTitleMobile');
+      const studentNameDisplay = document.getElementById('studentNameDisplay');
+      const studentNameProfile = document.getElementById('studentNameProfile');
+      const totalSppLabel = document.getElementById('totalSppLabel');
+      const lastPaymentLabel = document.getElementById('lastPaymentLabel');
+
+      if (appTitle) {
+        appTitle.textContent = (newConfig.app_title || defaultConfig.app_title).toUpperCase();
+      }
+      if (appTitleMobile) {
+        appTitleMobile.textContent = (newConfig.app_title || defaultConfig.app_title).toUpperCase();
+      }
+      if (studentNameDisplay) {
+        studentNameDisplay.textContent = newConfig.student_name || defaultConfig.student_name;
+      }
+      if (studentNameProfile) {
+        studentNameProfile.textContent = newConfig.student_name || defaultConfig.student_name;
+      }
+      if (totalSppLabel) {
+        totalSppLabel.textContent = newConfig.total_spp_label || defaultConfig.total_spp_label;
+      }
+      if (lastPaymentLabel) {
+        lastPaymentLabel.textContent = newConfig.last_payment_label || defaultConfig.last_payment_label;
+      }
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig: defaultConfig,
+        onConfigChange: onConfigChange,
+        mapToCapabilities: (cfg) => ({
+          recolorables: [],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (cfg) => new Map([
+          ['app_title', cfg.app_title || defaultConfig.app_title],
+          ['student_name', cfg.student_name || defaultConfig.student_name],
+          ['total_spp_label', cfg.total_spp_label || defaultConfig.total_spp_label],
+          ['last_payment_label', cfg.last_payment_label || defaultConfig.last_payment_label]
+        ])
+      });
+    }
+
+    // Initialize app on load
+    initializeApp();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a2cb540833de782',t:'MTc2Mzg1OTQwMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
