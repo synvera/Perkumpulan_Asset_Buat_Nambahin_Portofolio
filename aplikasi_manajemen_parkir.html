@@ -1,0 +1,2823 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quantum Parking Intelligence</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+      color: #ffffff;
+      overflow-x: hidden;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body.light-mode {
+      background: linear-gradient(135deg, #f5f5f7 0%, #ffffff 100%);
+      color: #000000;
+    }
+
+    body.light-mode::before {
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(0, 0, 0, 0.02) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(0, 0, 0, 0.01) 0%, transparent 50%);
+    }
+
+    .container {
+      width: 100%;
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Futuristic Grid Background */
+    .grid-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      opacity: 0.3;
+      z-index: 0;
+    }
+
+    body.light-mode .grid-bg {
+      background-image: 
+        linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+    }
+
+    /* Loading Screen */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #0a0a0a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 9999;
+      transition: opacity 0.6s, visibility 0.6s;
+    }
+
+    .loading-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .quantum-loader {
+      width: 80px;
+      height: 80px;
+      position: relative;
+    }
+
+    .quantum-loader::before,
+    .quantum-loader::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 2px solid transparent;
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: quantumSpin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+    }
+
+    .quantum-loader::after {
+      animation-delay: -0.75s;
+      border-top-color: rgba(255, 255, 255, 0.5);
+    }
+
+    @keyframes quantumSpin {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.1); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+
+    .loading-text {
+      margin-top: 2rem;
+      font-size: 0.875rem;
+      font-weight: 300;
+      letter-spacing: 3px;
+      opacity: 0.7;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.8; }
+    }
+
+    /* Navigation Bar */
+    .navbar {
+      background: rgba(10, 10, 10, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body.light-mode .navbar {
+      background: rgba(255, 255, 255, 0.8);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-brand {
+      font-size: 1.125rem;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.6) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    body.light-mode .navbar-brand {
+      background: linear-gradient(135deg, #000000 0%, rgba(0, 0, 0, 0.6) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-3px); }
+    }
+
+    .navbar-menu {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .navbar-menu button {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.75rem;
+      font-weight: 400;
+      cursor: pointer;
+      padding: 0.625rem 1.25rem;
+      border-radius: 20px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body.light-mode .navbar-menu button {
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      color: rgba(0, 0, 0, 0.8);
+    }
+
+    .navbar-menu button::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      transform: translate(-50%, -50%);
+      transition: width 0.5s, height 0.5s;
+    }
+
+    body.light-mode .navbar-menu button::before {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    .navbar-menu button:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .navbar-menu button:hover {
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(255, 255, 255, 0.1);
+    }
+
+    body.light-mode .navbar-menu button:hover {
+      border-color: rgba(0, 0, 0, 0.4);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-menu button.active {
+      background: #ffffff;
+      color: #000000;
+      border-color: #ffffff;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+    }
+
+    body.light-mode .navbar-menu button.active {
+      background: #000000;
+      color: #ffffff;
+      border-color: #000000;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: 3rem 2rem;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .page {
+      display: none;
+      animation: pageSlideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes pageSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Glass Cards */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 2.5rem;
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      margin-bottom: 2rem;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    body.light-mode .glass-card {
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+      transform: rotate(45deg);
+      pointer-events: none;
+    }
+
+    body.light-mode .glass-card::before {
+      background: linear-gradient(45deg, transparent, rgba(0, 0, 0, 0.02), transparent);
+    }
+
+    .glass-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 
+        0 16px 48px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    body.light-mode .glass-card:hover {
+      box-shadow: 
+        0 16px 48px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    .card-title {
+      font-size: 1.75rem;
+      font-weight: 300;
+      margin-bottom: 2rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.6) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    body.light-mode .card-title {
+      background: linear-gradient(135deg, #000000 0%, rgba(0, 0, 0, 0.6) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Stats Grid with 3D Effect */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      animation: floatCard 6s ease-in-out infinite;
+    }
+
+    body.light-mode .stat-card {
+      background: rgba(0, 0, 0, 0.03);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-card:nth-child(2) { animation-delay: -2s; }
+    .stat-card:nth-child(3) { animation-delay: -4s; }
+    .stat-card:nth-child(4) { animation-delay: -6s; }
+
+    @keyframes floatCard {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.6s;
+    }
+
+    body.light-mode .stat-card::after {
+      background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.05), transparent);
+    }
+
+    .stat-card:hover::after {
+      left: 100%;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-12px) scale(1.02);
+      box-shadow: 0 20px 60px rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    body.light-mode .stat-card:hover {
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      border-color: rgba(0, 0, 0, 0.2);
+    }
+
+    .stat-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      opacity: 0.8;
+      animation: iconPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes iconPulse {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.1); opacity: 1; }
+    }
+
+    .stat-value {
+      font-size: 2.75rem;
+      font-weight: 200;
+      margin-bottom: 0.75rem;
+      background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.7) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body.light-mode .stat-value {
+      background: linear-gradient(135deg, #000000 0%, rgba(0, 0, 0, 0.7) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      font-size: 0.8125rem;
+      font-weight: 300;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.6;
+    }
+
+    .stat-trend {
+      font-size: 0.75rem;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      font-weight: 400;
+    }
+
+    .trend-up {
+      color: #4ade80;
+    }
+
+    .trend-down {
+      color: #f87171;
+    }
+
+    /* AI Insight Panel */
+    .ai-insight {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-left: 3px solid rgba(255, 255, 255, 0.5);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: start;
+      gap: 1rem;
+      animation: slideInRight 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body.light-mode .ai-insight {
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.02) 100%);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-left: 3px solid rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .ai-icon {
+      font-size: 2rem;
+      animation: rotate 10s linear infinite;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .ai-content h3 {
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      opacity: 0.9;
+    }
+
+    .ai-content p {
+      font-size: 0.9375rem;
+      font-weight: 300;
+      line-height: 1.6;
+      opacity: 0.7;
+    }
+
+    /* Forms with Futuristic Style */
+    .form-group {
+      margin-bottom: 1.75rem;
+      position: relative;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.8125rem;
+      font-weight: 400;
+      margin-bottom: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+
+    .form-input,
+    .form-select {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      font-size: 0.9375rem;
+      font-weight: 300;
+      background: rgba(255, 255, 255, 0.05);
+      color: #ffffff;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    body.light-mode .form-input,
+    body.light-mode .form-select {
+      background: rgba(0, 0, 0, 0.03);
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      color: #000000;
+    }
+
+    .form-input:focus,
+    .form-select:focus {
+      outline: none;
+      border-color: rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    body.light-mode .form-input:focus,
+    body.light-mode .form-select:focus {
+      border-color: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.05);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Smart Autocomplete Suggestions */
+    .autocomplete-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      margin-top: 0.5rem;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 10;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      display: none;
+    }
+
+    body.light-mode .autocomplete-suggestions {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    }
+
+    .autocomplete-suggestions.active {
+      display: block;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .suggestion-item {
+      padding: 1rem 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.875rem;
+    }
+
+    body.light-mode .suggestion-item {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .suggestion-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    body.light-mode .suggestion-item:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    /* Quantum Buttons */
+    .quantum-btn {
+      padding: 1rem 2.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+    }
+
+    body.light-mode .quantum-btn {
+      background: rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      color: #000000;
+    }
+
+    .quantum-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+      border-radius: 50%;
+    }
+
+    body.light-mode .quantum-btn::before {
+      background: radial-gradient(circle, rgba(0, 0, 0, 0.1) 0%, transparent 70%);
+    }
+
+    .quantum-btn:hover::before {
+      width: 400px;
+      height: 400px;
+    }
+
+    .quantum-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.6);
+    }
+
+    body.light-mode .quantum-btn:hover {
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      border-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .quantum-btn-primary {
+      background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 100%);
+      color: #000000;
+      border: none;
+      box-shadow: 0 8px 32px rgba(255, 255, 255, 0.3);
+    }
+
+    body.light-mode .quantum-btn-primary {
+      background: linear-gradient(135deg, #000000 0%, rgba(0, 0, 0, 0.8) 100%);
+      color: #ffffff;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .quantum-btn-primary:hover {
+      box-shadow: 0 16px 48px rgba(255, 255, 255, 0.4);
+    }
+
+    body.light-mode .quantum-btn-primary:hover {
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    /* Holographic Slot Grid */
+    .holo-slot-container {
+      perspective: 1000px;
+    }
+
+    .slot-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 1.25rem;
+      margin-top: 2rem;
+    }
+
+    .holo-slot {
+      aspect-ratio: 1;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      font-weight: 300;
+      position: relative;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(10px);
+      transform-style: preserve-3d;
+    }
+
+    body.light-mode .holo-slot {
+      background: rgba(0, 0, 0, 0.02);
+      border: 2px solid rgba(0, 0, 0, 0.15);
+    }
+
+    .holo-slot::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.05) 50%, transparent 70%);
+      animation: scanline 3s linear infinite;
+    }
+
+    body.light-mode .holo-slot::before {
+      background: linear-gradient(45deg, transparent 30%, rgba(0, 0, 0, 0.03) 50%, transparent 70%);
+    }
+
+    @keyframes scanline {
+      from { transform: translateX(-100%) translateY(-100%); }
+      to { transform: translateX(100%) translateY(100%); }
+    }
+
+    .holo-slot.available {
+      border-color: rgba(74, 222, 128, 0.4);
+    }
+
+    .holo-slot.available:hover {
+      background: rgba(74, 222, 128, 0.1);
+      border-color: rgba(74, 222, 128, 0.6);
+      transform: translateY(-6px) rotateX(5deg);
+      box-shadow: 0 16px 40px rgba(74, 222, 128, 0.2);
+    }
+
+    .holo-slot.occupied {
+      background: rgba(248, 113, 113, 0.15);
+      border-color: rgba(248, 113, 113, 0.4);
+      box-shadow: inset 0 0 20px rgba(248, 113, 113, 0.1);
+    }
+
+    .holo-slot.occupied:hover {
+      transform: translateY(-6px) rotateX(5deg);
+      box-shadow: 0 16px 40px rgba(248, 113, 113, 0.3);
+      border-color: rgba(248, 113, 113, 0.6);
+    }
+
+    .holo-slot.pulse-animation {
+      animation: slotPulse 1.5s ease-in-out 3;
+    }
+
+    @keyframes slotPulse {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(255, 255, 255, 0.4);
+      }
+      50% {
+        transform: scale(1.08);
+        box-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
+      }
+    }
+
+    .slot-number {
+      font-size: 0.875rem;
+      letter-spacing: 2px;
+      font-weight: 500;
+    }
+
+    .slot-status {
+      font-size: 0.6875rem;
+      opacity: 0.6;
+      margin-top: 0.5rem;
+      letter-spacing: 1px;
+    }
+
+    /* Advanced Data Table */
+    .quantum-table-container {
+      overflow-x: auto;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.02);
+      backdrop-filter: blur(10px);
+    }
+
+    body.light-mode .quantum-table-container {
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      background: rgba(0, 0, 0, 0.02);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-weight: 300;
+    }
+
+    thead {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+    }
+
+    body.light-mode thead {
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    th {
+      padding: 1.25rem 1.5rem;
+      text-align: left;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    body.light-mode th {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    td {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.875rem;
+      letter-spacing: 0.5px;
+    }
+
+    body.light-mode td {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    tbody tr {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    tbody tr:hover {
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateX(4px);
+    }
+
+    body.light-mode tbody tr:hover {
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    /* Notification System */
+    .notification-center {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .notif-item {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-left: 4px solid rgba(255, 255, 255, 0.5);
+      border-radius: 16px;
+      padding: 1.5rem;
+      display: flex;
+      align-items: start;
+      gap: 1.25rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: notifSlideIn 0.5s ease;
+    }
+
+    body.light-mode .notif-item {
+      background: rgba(0, 0, 0, 0.03);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-left: 4px solid rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes notifSlideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .notif-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateX(4px);
+    }
+
+    body.light-mode .notif-item:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    .notif-item.critical {
+      border-left-color: #f87171;
+      animation: criticalPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes criticalPulse {
+      0%, 100% {
+        box-shadow: 0 0 0 rgba(248, 113, 113, 0);
+      }
+      50% {
+        box-shadow: 0 0 20px rgba(248, 113, 113, 0.4);
+      }
+    }
+
+    .notif-icon {
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+
+    .notif-content {
+      flex: 1;
+    }
+
+    .notif-title {
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      letter-spacing: 1px;
+      font-size: 0.9375rem;
+    }
+
+    .notif-message {
+      font-size: 0.875rem;
+      opacity: 0.7;
+      font-weight: 300;
+      line-height: 1.5;
+    }
+
+    .notif-time {
+      font-size: 0.6875rem;
+      opacity: 0.5;
+      margin-top: 0.75rem;
+      letter-spacing: 1px;
+    }
+
+    .notif-badge {
+      width: 10px;
+      height: 10px;
+      background: #4ade80;
+      border-radius: 50%;
+      flex-shrink: 0;
+      box-shadow: 0 0 10px #4ade80;
+      animation: badgePulse 2s ease-in-out infinite;
+    }
+
+    @keyframes badgePulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.2); }
+    }
+
+    /* Toast Notification */
+    .quantum-toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(20px);
+      color: #ffffff;
+      padding: 1.25rem 2rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+      font-weight: 300;
+      letter-spacing: 1px;
+      opacity: 0;
+      transform: translateY(20px) scale(0.9);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1000;
+      max-width: 400px;
+    }
+
+    body.light-mode .quantum-toast {
+      background: rgba(255, 255, 255, 0.95);
+      color: #000000;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+    }
+
+    .quantum-toast.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    /* Settings */
+    .settings-grid {
+      display: grid;
+      gap: 2rem;
+    }
+
+    .settings-section {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 2rem;
+    }
+
+    body.light-mode .settings-section {
+      background: rgba(0, 0, 0, 0.02);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .settings-title {
+      font-size: 1.125rem;
+      font-weight: 400;
+      margin-bottom: 1.5rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .settings-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    body.light-mode .settings-item {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .settings-item:last-child {
+      border-bottom: none;
+    }
+
+    .settings-label {
+      font-weight: 300;
+      letter-spacing: 1px;
+      font-size: 0.9375rem;
+    }
+
+    /* Quantum Toggle Switch */
+    .quantum-toggle {
+      position: relative;
+      width: 60px;
+      height: 30px;
+    }
+
+    .quantum-toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 30px;
+    }
+
+    body.light-mode .toggle-slider {
+      background: rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 4px;
+      bottom: 3px;
+      background: #ffffff;
+      transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    body.light-mode .toggle-slider:before {
+      background: #000000;
+    }
+
+    input:checked + .toggle-slider {
+      background: rgba(74, 222, 128, 0.3);
+      border-color: rgba(74, 222, 128, 0.6);
+    }
+
+    input:checked + .toggle-slider:before {
+      transform: translateX(30px);
+      box-shadow: 0 2px 12px rgba(74, 222, 128, 0.5);
+    }
+
+    /* Modal */
+    .quantum-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(10px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .quantum-modal-overlay.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .quantum-modal {
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(30px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 24px;
+      padding: 2.5rem;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90%;
+      overflow-y: auto;
+      box-shadow: 0 20px 80px rgba(0, 0, 0, 0.8);
+      animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body.light-mode .quantum-modal {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      box-shadow: 0 20px 80px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes modalSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    body.light-mode .modal-header {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 300;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: inherit;
+      padding: 0.5rem;
+      transition: all 0.3s;
+      opacity: 0.6;
+    }
+
+    .modal-close:hover {
+      opacity: 1;
+      transform: rotate(90deg);
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 1.25rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    body.light-mode .detail-row {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .detail-label {
+      font-weight: 300;
+      opacity: 0.6;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-size: 0.8125rem;
+    }
+
+    .detail-value {
+      font-weight: 400;
+      letter-spacing: 0.5px;
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Search Bar */
+    .quantum-search {
+      position: relative;
+      margin-bottom: 2rem;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 1.25rem 1.5rem 1.25rem 3.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      font-size: 0.9375rem;
+      font-weight: 300;
+      background: rgba(255, 255, 255, 0.05);
+      color: #ffffff;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(10px);
+    }
+
+    body.light-mode .search-input {
+      background: rgba(0, 0, 0, 0.03);
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      color: #000000;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 8px 32px rgba(255, 255, 255, 0.1);
+    }
+
+    body.light-mode .search-input:focus {
+      border-color: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.05);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1.25rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.25rem;
+      opacity: 0.5;
+    }
+
+    /* Status Badge */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.375rem 1rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .status-active {
+      background: rgba(74, 222, 128, 0.2);
+      color: #4ade80;
+      border: 1px solid rgba(74, 222, 128, 0.4);
+    }
+
+    .status-exited {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    body.light-mode .status-exited {
+      background: rgba(0, 0, 0, 0.05);
+      color: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+
+    /* Action Buttons in Table */
+    .action-btn {
+      padding: 0.5rem 1rem;
+      font-size: 0.6875rem;
+      letter-spacing: 1.5px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    body.light-mode .action-btn {
+      background: rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      color: #000000;
+    }
+
+    .action-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    body.light-mode .action-btn:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    /* Live Status Indicator */
+    .live-indicator {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.25rem 1.5rem;
+      background: rgba(74, 222, 128, 0.1);
+      border: 1px solid rgba(74, 222, 128, 0.3);
+      border-radius: 16px;
+      margin-top: 2rem;
+    }
+
+    .live-dot {
+      width: 14px;
+      height: 14px;
+      background: #4ade80;
+      border-radius: 50%;
+      box-shadow: 0 0 20px #4ade80;
+      animation: livePulse 2s ease-in-out infinite;
+    }
+
+    @keyframes livePulse {
+      0%, 100% {
+        box-shadow: 0 0 20px #4ade80;
+        opacity: 1;
+      }
+      50% {
+        box-shadow: 0 0 40px #4ade80;
+        opacity: 0.7;
+      }
+    }
+
+    .live-text {
+      font-weight: 300;
+      letter-spacing: 1px;
+      font-size: 0.9375rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 2rem 1.25rem;
+      }
+
+      .navbar {
+        padding: 1rem 1.25rem;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .navbar-menu {
+        width: 100%;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+
+      .navbar-menu button {
+        padding: 0.5rem 0.875rem;
+        font-size: 0.6875rem;
+      }
+
+      .glass-card {
+        padding: 1.75rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+      }
+
+      .stat-card {
+        padding: 1.5rem 1rem;
+      }
+
+      .stat-value {
+        font-size: 2rem;
+      }
+
+      .card-title {
+        font-size: 1.25rem;
+      }
+
+      .btn-group {
+        flex-direction: column;
+      }
+
+      .quantum-btn {
+        width: 100%;
+      }
+
+      .filter-bar {
+        grid-template-columns: 1fr;
+      }
+
+      .slot-grid {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+        gap: 0.875rem;
+      }
+
+      .quantum-modal {
+        padding: 1.75rem;
+      }
+
+      .quantum-toast {
+        bottom: 1rem;
+        right: 1rem;
+        left: 1rem;
+        max-width: none;
+      }
+
+      table {
+        font-size: 0.75rem;
+      }
+
+      th, td {
+        padding: 0.875rem 1rem;
+      }
+    }
+
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    body.light-mode ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+    }
+
+    body.light-mode ::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    body.light-mode ::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 0, 0, 0.3);
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="grid-bg"></div><!-- Loading Screen -->
+  <div class="loading-screen" id="loadingScreen">
+   <div class="quantum-loader"></div>
+   <div class="loading-text">
+    INITIALIZING QUANTUM SYSTEM
+   </div>
+  </div>
+  <div class="container"><!-- Navigation -->
+   <nav class="navbar">
+    <div class="navbar-brand" id="appTitle">
+     QUANTUM PARKING
+    </div>
+    <div class="navbar-menu"><button onclick="navigateTo('home')" class="active" data-page="home">Hub</button> <button onclick="navigateTo('entry')" data-page="entry">Entry</button> <button onclick="navigateTo('exit')" data-page="exit">Exit</button> <button onclick="navigateTo('dashboard')" data-page="dashboard">Intel</button> <button onclick="navigateTo('history')" data-page="history">Archive</button> <button onclick="navigateTo('slots')" data-page="slots">Grid</button> <button onclick="navigateTo('notifications')" data-page="notifications">Alerts</button> <button onclick="navigateTo('settings')" data-page="settings">Config</button>
+    </div>
+   </nav><!-- Main Content -->
+   <main class="main-content"><!-- Home Page -->
+    <div id="home" class="page active">
+     <div class="glass-card">
+      <h1 class="card-title" id="welcomeMessage">Neural Network Active</h1><!-- AI Insight Panel -->
+      <div class="ai-insight" id="aiInsight">
+       <div class="ai-icon">
+        🧠
+       </div>
+       <div class="ai-content">
+        <h3>AI Analysis</h3>
+        <p id="aiInsightText">System analyzing parking patterns...</p>
+       </div>
+      </div>
+      <div class="stats-grid">
+       <div class="stat-card">
+        <div class="stat-icon">
+         🚗
+        </div>
+        <div class="stat-value" id="homeParkedCount">
+         0
+        </div>
+        <div class="stat-label">
+         Active Vehicles
+        </div>
+        <div class="stat-trend trend-up" id="homeParkedTrend"></div>
+       </div>
+       <div class="stat-card">
+        <div class="stat-icon">
+         📍
+        </div>
+        <div class="stat-value" id="homeAvailableSlots">
+         50
+        </div>
+        <div class="stat-label">
+         Available Slots
+        </div>
+        <div class="stat-trend" id="homeSlotsTrend"></div>
+       </div>
+       <div class="stat-card">
+        <div class="stat-icon">
+         💰
+        </div>
+        <div class="stat-value" id="homeTodayIncome">
+         Rp 0
+        </div>
+        <div class="stat-label">
+         Today Revenue
+        </div>
+        <div class="stat-trend trend-up" id="homeIncomeTrend"></div>
+       </div>
+       <div class="stat-card">
+        <div class="stat-icon">
+         ✓
+        </div>
+        <div class="stat-value" id="homeTotalExit">
+         0
+        </div>
+        <div class="stat-label">
+         Completed
+        </div>
+        <div class="stat-trend" id="homeExitTrend"></div>
+       </div>
+      </div>
+     </div>
+    </div><!-- Entry Page -->
+    <div id="entry" class="page">
+     <div class="glass-card">
+      <h1 class="card-title" id="entryPageTitle">Vehicle Registration</h1>
+      <form id="entryForm" onsubmit="handleVehicleEntry(event)">
+       <div class="form-group"><label class="form-label">License Plate</label> <input type="text" class="form-input" id="entryPlate" required placeholder="e.g., B 1234 XYZ" oninput="showPlateAutocomplete(this.value)" autocomplete="off">
+        <div class="autocomplete-suggestions" id="plateAutocomplete"></div>
+       </div>
+       <div class="form-group"><label class="form-label">Vehicle Type</label> <select class="form-select" id="entryType" required> <option value="">Select type</option> <option value="car">Car</option> <option value="motorcycle">Motorcycle</option> <option value="truck">Truck</option> <option value="van">Van</option> </select>
+       </div>
+       <div class="form-group"><label class="form-label">Parking Slot</label> <select class="form-select" id="entrySlot" required> <option value="">Select slot</option> </select>
+        <div style="margin-top: 0.75rem; font-size: 0.8125rem; opacity: 0.6;" id="slotRecommendation"></div>
+       </div>
+       <div class="form-group"><label class="form-label">Entry Timestamp</label> <input type="text" class="form-input" id="entryTime" readonly>
+       </div>
+       <div class="btn-group"><button type="submit" class="quantum-btn quantum-btn-primary">Register Vehicle</button> <button type="button" class="quantum-btn" onclick="resetEntryForm()">Reset</button>
+       </div>
+      </form>
+     </div>
+    </div><!-- Exit Page -->
+    <div id="exit" class="page">
+     <div class="glass-card">
+      <h1 class="card-title" id="exitPageTitle">Departure Protocol</h1>
+      <div class="quantum-search"><span class="search-icon">🔍</span> <input type="text" class="search-input" id="exitSearchPlate" placeholder="Search license plate..." oninput="smartSearchVehicle()">
+      </div>
+      <div id="exitVehicleInfo" style="display: none;">
+       <div class="glass-card" style="background: rgba(255, 255, 255, 0.03); margin-bottom: 1.5rem;">
+        <div class="detail-row"><span class="detail-label">License Plate</span> <span class="detail-value" id="exitInfoPlate" style="font-size: 1.125rem; font-weight: 500;">-</span>
+        </div>
+        <div class="detail-row"><span class="detail-label">Vehicle Type</span> <span class="detail-value" id="exitInfoType">-</span>
+        </div>
+        <div class="detail-row"><span class="detail-label">Parking Slot</span> <span class="detail-value" id="exitInfoSlot">-</span>
+        </div>
+        <div class="detail-row"><span class="detail-label">Entry Time</span> <span class="detail-value" id="exitInfoEntry">-</span>
+        </div>
+        <div class="detail-row"><span class="detail-label">Exit Time</span> <span class="detail-value" id="exitInfoExit">-</span>
+        </div>
+        <div class="detail-row"><span class="detail-label">Duration</span> <span class="detail-value" id="exitInfoDuration">-</span>
+        </div>
+        <div class="detail-row" style="border-bottom: none;"><span class="detail-label">Total Cost</span> <span class="detail-value" id="exitInfoCost" style="font-size: 1.75rem; font-weight: 400;">-</span>
+        </div>
+       </div>
+       <div class="btn-group"><button class="quantum-btn quantum-btn-primary" onclick="confirmVehicleExit()">Confirm Exit</button> <button class="quantum-btn" onclick="clearExitSearch()">Cancel</button>
+       </div>
+      </div>
+      <div id="exitNoVehicle" style="text-align: center; padding: 4rem 0; opacity: 0.4;">
+       <div style="font-size: 4rem; margin-bottom: 1.5rem;">
+        🔍
+       </div>
+       <div style="font-weight: 300; letter-spacing: 2px; text-transform: uppercase;">
+        Search for vehicle
+       </div>
+      </div>
+     </div>
+    </div><!-- Dashboard Page -->
+    <div id="dashboard" class="page">
+     <div class="glass-card">
+      <h1 class="card-title" id="dashboardTitle">Intelligence Center</h1><!-- AI Insight -->
+      <div class="ai-insight" id="dashAiInsight">
+       <div class="ai-icon">
+        📊
+       </div>
+       <div class="ai-content">
+        <h3>Real-Time Analysis</h3>
+        <p id="dashAiInsightText">Monitoring parking operations...</p>
+       </div>
+      </div>
+      <div class="stats-grid">
+       <div class="stat-card">
+        <div class="stat-icon">
+         🚗
+        </div>
+        <div class="stat-value" id="dashParkedCount">
+         0
+        </div>
+        <div class="stat-label">
+         Currently Parked
+        </div>
+       </div>
+       <div class="stat-card">
+        <div class="stat-icon">
+         ✓
+        </div>
+        <div class="stat-value" id="dashExitedCount">
+         0
+        </div>
+        <div class="stat-label">
+         Exited Today
+        </div>
+       </div>
+       <div class="stat-card">
+        <div class="stat-icon">
+         📍
+        </div>
+        <div class="stat-value" id="dashAvailableSlots">
+         50
+        </div>
+        <div class="stat-label">
+         Available
+        </div>
+       </div>
+       <div class="stat-card">
+        <div class="stat-icon">
+         💰
+        </div>
+        <div class="stat-value" id="dashTodayIncome">
+         Rp 0
+        </div>
+        <div class="stat-label">
+         Revenue
+        </div>
+       </div>
+      </div>
+      <h2 class="card-title" style="font-size: 1.25rem; margin-top: 2.5rem;">Vehicle Distribution</h2>
+      <div class="stats-grid">
+       <div class="stat-card">
+        <div class="stat-icon">
+         🚙
+        </div>
+        <div class="stat-value" id="dashCarCount">
+         0
+        </div>
+        <div class="stat-label">
+         Cars
+        </div>
+       </div>
+       <div class="stat-card">
+        <div class="stat-icon">
+         🏍️
+        </div>
+        <div class="stat-value" id="dashMotorcycleCount">
+         0
+        </div>
+        <div class="stat-label">
+         Motorcycles
+        </div>
+       </div>
+       <div class="stat-card">
+        <div class="stat-icon">
+         🚛
+        </div>
+        <div class="stat-value" id="dashTruckCount">
+         0
+        </div>
+        <div class="stat-label">
+         Trucks
+        </div>
+       </div>
+       <div class="stat-card">
+        <div class="stat-icon">
+         🚐
+        </div>
+        <div class="stat-value" id="dashVanCount">
+         0
+        </div>
+        <div class="stat-label">
+         Vans
+        </div>
+       </div>
+      </div>
+      <div class="live-indicator">
+       <div class="live-dot"></div>
+       <div class="live-text">
+        System Active • Last Updated: <span id="lastUpdated">-</span>
+       </div>
+      </div>
+     </div>
+    </div><!-- History Page -->
+    <div id="history" class="page">
+     <div class="glass-card">
+      <h1 class="card-title" id="historyTitle">Data Archives</h1>
+      <div class="filter-bar">
+       <div class="form-group" style="margin-bottom: 0;"><label class="form-label">Filter Date</label> <input type="date" class="form-input" id="filterDate" onchange="applyFilters()">
+       </div>
+       <div class="form-group" style="margin-bottom: 0;"><label class="form-label">Vehicle Type</label> <select class="form-select" id="filterType" onchange="applyFilters()"> <option value="">All Types</option> <option value="car">Car</option> <option value="motorcycle">Motorcycle</option> <option value="truck">Truck</option> <option value="van">Van</option> </select>
+       </div>
+       <div class="form-group" style="margin-bottom: 0;"><label class="form-label">Status</label> <select class="form-select" id="filterStatus" onchange="applyFilters()"> <option value="">All Status</option> <option value="parked">Active</option> <option value="exited">Exited</option> </select>
+       </div>
+      </div>
+      <div class="quantum-table-container">
+       <table>
+        <thead>
+         <tr>
+          <th>Plate</th>
+          <th>Type</th>
+          <th>Slot</th>
+          <th>Entry</th>
+          <th>Exit</th>
+          <th>Duration</th>
+          <th>Cost</th>
+          <th>Actions</th>
+         </tr>
+        </thead>
+        <tbody id="historyTableBody">
+         <tr>
+          <td colspan="8" style="text-align: center; padding: 3rem; opacity: 0.4;">
+           <div style="font-size: 3rem; margin-bottom: 1rem;">
+            📁
+           </div>
+           <div>
+            No records found
+           </div></td>
+         </tr>
+        </tbody>
+       </table>
+      </div>
+     </div>
+    </div><!-- Slots Page -->
+    <div id="slots" class="page">
+     <div class="glass-card">
+      <h1 class="card-title">Quantum Grid</h1>
+      <div style="display: flex; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap;">
+       <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <div style="width: 24px; height: 24px; background: rgba(74, 222, 128, 0.2); border: 2px solid rgba(74, 222, 128, 0.4); border-radius: 6px;"></div><span style="font-weight: 300; font-size: 0.875rem; letter-spacing: 1px;">Available</span>
+       </div>
+       <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <div style="width: 24px; height: 24px; background: rgba(248, 113, 113, 0.15); border: 2px solid rgba(248, 113, 113, 0.4); border-radius: 6px;"></div><span style="font-weight: 300; font-size: 0.875rem; letter-spacing: 1px;">Occupied</span>
+       </div>
+      </div>
+      <div class="holo-slot-container">
+       <div class="slot-grid" id="slotGrid"></div>
+      </div>
+     </div>
+    </div><!-- Notifications Page -->
+    <div id="notifications" class="page">
+     <div class="glass-card">
+      <h1 class="card-title">Neural Alerts</h1>
+      <div class="notification-center" id="notificationCenter">
+       <div class="notif-item">
+        <div class="notif-icon">
+         🧠
+        </div>
+        <div class="notif-content">
+         <div class="notif-title">
+          System Active
+         </div>
+         <div class="notif-message">
+          Quantum Parking Intelligence is online and monitoring.
+         </div>
+         <div class="notif-time">
+          Just now
+         </div>
+        </div>
+        <div class="notif-badge"></div>
+       </div>
+      </div>
+     </div>
+    </div><!-- Settings Page -->
+    <div id="settings" class="page">
+     <div class="glass-card">
+      <h1 class="card-title">System Configuration</h1>
+      <div class="settings-grid">
+       <div class="settings-section">
+        <h2 class="settings-title">Appearance</h2>
+        <div class="settings-item"><span class="settings-label">Light Mode</span> <label class="quantum-toggle"> <input type="checkbox" id="themeToggle" onchange="toggleTheme()"> <span class="toggle-slider"></span> </label>
+        </div>
+       </div>
+       <div class="settings-section">
+        <h2 class="settings-title">System Info</h2>
+        <div class="settings-item"><span class="settings-label">Total Capacity</span> <span class="settings-label" style="font-weight: 500;">50 Slots</span>
+        </div>
+        <div class="settings-item"><span class="settings-label">Car Rate</span> <span class="settings-label" style="font-weight: 500;">Rp 5,000/hour</span>
+        </div>
+        <div class="settings-item"><span class="settings-label">Motorcycle Rate</span> <span class="settings-label" style="font-weight: 500;">Rp 3,000/hour</span>
+        </div>
+        <div class="settings-item"><span class="settings-label">Status</span>
+         <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <div class="live-dot" style="width: 10px; height: 10px;"></div><span class="settings-label" style="font-weight: 500; color: #4ade80;">Online</span>
+         </div>
+        </div>
+       </div>
+       <div class="settings-section">
+        <h2 class="settings-title">Data Management</h2><button class="quantum-btn quantum-btn-primary" onclick="exportSystemData()" style="width: 100%; margin-bottom: 1rem;"> Export Database </button> <button class="quantum-btn" onclick="confirmDataReset()" style="width: 100%;"> Clear All Data </button>
+        <p style="font-size: 0.75rem; opacity: 0.5; margin-top: 1rem; font-weight: 300; letter-spacing: 0.5px;">Export data for backup or permanently clear all records</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </main>
+  </div><!-- Toast -->
+  <div class="quantum-toast" id="toast"></div><!-- Modal Placeholder -->
+  <div class="quantum-modal-overlay" id="modalOverlay"></div>
+  <script>
+    // Configuration
+    const defaultConfig = {
+      app_title: "QUANTUM PARKING",
+      welcome_message: "Neural Network Active",
+      entry_page_title: "Vehicle Registration",
+      exit_page_title: "Departure Protocol",
+      dashboard_title: "Intelligence Center",
+      history_title: "Data Archives"
+    };
+
+    let config = { ...defaultConfig };
+
+    // LocalStorage Keys
+    const STORAGE = {
+      VEHICLES: 'qp_vehicles',
+      NOTIFICATIONS: 'qp_notifications',
+      SETTINGS: 'qp_settings',
+      THEME: 'qp_theme',
+      CONFIG: 'qp_config',
+      AUTOCOMPLETE: 'qp_autocomplete'
+    };
+
+    // Intelligent Data Manager
+    class QuantumDataManager {
+      static initStorage() {
+        // Initialize with data validation and recovery
+        const vehicles = this.getVehicles();
+        const cleaned = vehicles.filter(v => v && v.id && v.plate);
+        if (cleaned.length !== vehicles.length) {
+          localStorage.setItem(STORAGE.VEHICLES, JSON.stringify(cleaned));
+        }
+      }
+
+      static getVehicles() {
+        try {
+          const data = localStorage.getItem(STORAGE.VEHICLES);
+          return data ? JSON.parse(data) : [];
+        } catch (e) {
+          console.error('Data corruption detected, resetting...');
+          localStorage.removeItem(STORAGE.VEHICLES);
+          return [];
+        }
+      }
+
+      static saveVehicles(vehicles) {
+        localStorage.setItem(STORAGE.VEHICLES, JSON.stringify(vehicles));
+        this.triggerUpdate();
+      }
+
+      static addVehicle(vehicle) {
+        const vehicles = this.getVehicles();
+        
+        // Check for duplicates
+        const exists = vehicles.find(v => v.plate === vehicle.plate && !v.exitTime);
+        if (exists) {
+          return { success: false, message: 'Vehicle already parked' };
+        }
+
+        vehicles.push(vehicle);
+        this.saveVehicles(vehicles);
+        this.addAutocompleteEntry(vehicle.plate, vehicle.type);
+        this.addNotification('success', 'Vehicle Registered', `${vehicle.plate} registered at slot ${vehicle.slot}`);
+        return { success: true };
+      }
+
+      static updateVehicle(id, updates) {
+        const vehicles = this.getVehicles();
+        const index = vehicles.findIndex(v => v.id === id);
+        if (index !== -1) {
+          vehicles[index] = { ...vehicles[index], ...updates };
+          this.saveVehicles(vehicles);
+          return true;
+        }
+        return false;
+      }
+
+      static deleteVehicle(id) {
+        const vehicles = this.getVehicles();
+        const filtered = vehicles.filter(v => v.id !== id);
+        this.saveVehicles(filtered);
+        this.addNotification('info', 'Record Deleted', 'Vehicle record removed from system');
+      }
+
+      static getNotifications() {
+        try {
+          const data = localStorage.getItem(STORAGE.NOTIFICATIONS);
+          return data ? JSON.parse(data) : [];
+        } catch {
+          return [];
+        }
+      }
+
+      static addNotification(type, title, message) {
+        const notifications = this.getNotifications();
+        notifications.unshift({
+          id: Date.now().toString(),
+          type,
+          title,
+          message,
+          timestamp: new Date().toISOString(),
+          read: false
+        });
+        if (notifications.length > 100) notifications.splice(100);
+        localStorage.setItem(STORAGE.NOTIFICATIONS, JSON.stringify(notifications));
+      }
+
+      static addAutocompleteEntry(plate, type) {
+        let autocomplete = {};
+        try {
+          const data = localStorage.getItem(STORAGE.AUTOCOMPLETE);
+          autocomplete = data ? JSON.parse(data) : {};
+        } catch {}
+        autocomplete[plate] = { type, count: (autocomplete[plate]?.count || 0) + 1, lastUsed: Date.now() };
+        localStorage.setItem(STORAGE.AUTOCOMPLETE, JSON.stringify(autocomplete));
+      }
+
+      static getAutocomplete() {
+        try {
+          const data = localStorage.getItem(STORAGE.AUTOCOMPLETE);
+          return data ? JSON.parse(data) : {};
+        } catch {
+          return {};
+        }
+      }
+
+      static triggerUpdate() {
+        updateAllStats();
+        generateInsights();
+        if (document.getElementById('history').classList.contains('active')) {
+          loadHistory();
+        }
+        if (document.getElementById('slots').classList.contains('active')) {
+          renderSlotGrid();
+        }
+      }
+
+      static exportData() {
+        return JSON.stringify({
+          vehicles: this.getVehicles(),
+          notifications: this.getNotifications(),
+          autocomplete: this.getAutocomplete(),
+          exportDate: new Date().toISOString(),
+          version: '2.0'
+        }, null, 2);
+      }
+
+      static clearAll() {
+        localStorage.removeItem(STORAGE.VEHICLES);
+        this.addNotification('warning', 'Data Cleared', 'All parking records permanently deleted');
+        this.triggerUpdate();
+      }
+    }
+
+    // Initialize System
+    function initQuantumSystem() {
+      showLoading();
+      
+      setTimeout(() => {
+        QuantumDataManager.initStorage();
+        
+        // Load config
+        const savedConfig = localStorage.getItem(STORAGE.CONFIG);
+        if (savedConfig) {
+          config = { ...defaultConfig, ...JSON.parse(savedConfig) };
+        }
+        
+        // Load theme
+        const savedTheme = localStorage.getItem(STORAGE.THEME);
+        if (savedTheme === 'light') {
+          document.body.classList.add('light-mode');
+          document.getElementById('themeToggle').checked = true;
+        }
+        
+        applyConfig();
+        updateEntryTime();
+        setInterval(updateEntryTime, 1000);
+        loadAvailableSlots();
+        renderSlotGrid();
+        updateAllStats();
+        loadHistory();
+        loadNotifications();
+        generateInsights();
+        
+        setInterval(() => {
+          if (document.getElementById('dashboard').classList.contains('active')) {
+            updateAllStats();
+            generateInsights();
+          }
+        }, 15000);
+        
+        setInterval(updateDashboardTime, 1000);
+        
+        hideLoading();
+      }, 1500);
+    }
+
+    function showLoading() {
+      document.getElementById('loadingScreen').classList.remove('hidden');
+    }
+
+    function hideLoading() {
+      document.getElementById('loadingScreen').classList.add('hidden');
+    }
+
+    function applyConfig() {
+      document.getElementById('appTitle').textContent = config.app_title || defaultConfig.app_title;
+      document.getElementById('welcomeMessage').textContent = config.welcome_message || defaultConfig.welcome_message;
+      document.getElementById('entryPageTitle').textContent = config.entry_page_title || defaultConfig.entry_page_title;
+      document.getElementById('exitPageTitle').textContent = config.exit_page_title || defaultConfig.exit_page_title;
+      document.getElementById('dashboardTitle').textContent = config.dashboard_title || defaultConfig.dashboard_title;
+      document.getElementById('historyTitle').textContent = config.history_title || defaultConfig.history_title;
+    }
+
+    // Navigation
+    function navigateTo(page) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.navbar-menu button').forEach(b => b.classList.remove('active'));
+      
+      document.getElementById(page).classList.add('active');
+      document.querySelector(`[data-page="${page}"]`).classList.add('active');
+      
+      if (page === 'dashboard') { updateAllStats(); generateInsights(); }
+      if (page === 'history') loadHistory();
+      if (page === 'slots') renderSlotGrid();
+      if (page === 'notifications') loadNotifications();
+    }
+
+    // Utilities
+    function formatDateTime(date) {
+      const d = new Date(date);
+      return d.toLocaleString('en-US', { 
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', hour12: false 
+      });
+    }
+
+    function formatCurrency(amount) {
+      return 'Rp ' + amount.toLocaleString('id-ID');
+    }
+
+    function calculateDuration(entryTime, exitTime) {
+      const diff = exitTime - entryTime;
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      return `${hours}h ${minutes}m`;
+    }
+
+    function calculateCost(entryTime, exitTime, vehicleType) {
+      const diff = exitTime - entryTime;
+      const hours = Math.ceil(diff / (1000 * 60 * 60));
+      const rates = { car: 5000, motorcycle: 3000, truck: 8000, van: 6000 };
+      return hours * (rates[vehicleType] || 5000);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    // Entry Time Update
+    function updateEntryTime() {
+      const now = new Date();
+      const timeStr = formatDateTime(now);
+      const elem = document.getElementById('entryTime');
+      if (elem) elem.value = timeStr;
+    }
+
+    // Smart Autocomplete
+    function showPlateAutocomplete(value) {
+      if (!value || value.length < 2) {
+        document.getElementById('plateAutocomplete').classList.remove('active');
+        return;
+      }
+      
+      const autocomplete = QuantumDataManager.getAutocomplete();
+      const matches = Object.keys(autocomplete)
+        .filter(plate => plate.toUpperCase().includes(value.toUpperCase()))
+        .sort((a, b) => autocomplete[b].count - autocomplete[a].count)
+        .slice(0, 5);
+      
+      if (matches.length === 0) {
+        document.getElementById('plateAutocomplete').classList.remove('active');
+        return;
+      }
+      
+      const container = document.getElementById('plateAutocomplete');
+      container.innerHTML = matches.map(plate => {
+        const data = autocomplete[plate];
+        return `
+          <div class="suggestion-item" onclick="selectPlate('${plate}', '${data.type}')">
+            <div style="font-weight: 500;">${plate}</div>
+            <div style="font-size: 0.75rem; opacity: 0.6; margin-top: 0.25rem;">${data.type} • Used ${data.count} times</div>
+          </div>
+        `;
+      }).join('');
+      container.classList.add('active');
+    }
+
+    function selectPlate(plate, type) {
+      document.getElementById('entryPlate').value = plate;
+      document.getElementById('entryType').value = type;
+      document.getElementById('plateAutocomplete').classList.remove('active');
+    }
+
+    // Load Available Slots with Smart Recommendation
+    function loadAvailableSlots() {
+      const select = document.getElementById('entrySlot');
+      if (!select) return;
+      
+      const vehicles = QuantumDataManager.getVehicles();
+      const occupiedSlots = vehicles.filter(v => !v.exitTime).map(v => v.slot);
+      
+      select.innerHTML = '<option value="">Select slot</option>';
+      
+      let nearestAvailable = null;
+      for (let i = 1; i <= 50; i++) {
+        const slotNum = `A${String(i).padStart(2, '0')}`;
+        if (!occupiedSlots.includes(slotNum)) {
+          const option = document.createElement('option');
+          option.value = slotNum;
+          option.textContent = slotNum;
+          select.appendChild(option);
+          if (!nearestAvailable) nearestAvailable = slotNum;
+        }
+      }
+      
+      if (nearestAvailable) {
+        document.getElementById('slotRecommendation').textContent = `🎯 Recommended: ${nearestAvailable} (nearest available)`;
+      } else {
+        select.innerHTML = '<option value="">No slots available</option>';
+        select.disabled = true;
+        document.getElementById('slotRecommendation').textContent = '⚠️ Parking full';
+      }
+    }
+
+    // Handle Vehicle Entry
+    function handleVehicleEntry(event) {
+      event.preventDefault();
+      
+      const plate = document.getElementById('entryPlate').value.trim().toUpperCase();
+      const type = document.getElementById('entryType').value;
+      const slot = document.getElementById('entrySlot').value;
+      
+      if (!plate || !type || !slot) {
+        showToast('❌ Please fill all fields');
+        return;
+      }
+      
+      const newVehicle = {
+        id: Date.now().toString(),
+        plate,
+        type,
+        slot,
+        entryTime: new Date().toISOString(),
+        exitTime: null
+      };
+      
+      const result = QuantumDataManager.addVehicle(newVehicle);
+      if (!result.success) {
+        showToast(`❌ ${result.message}`);
+        return;
+      }
+      
+      resetEntryForm();
+      loadAvailableSlots();
+      showToast(`✓ ${plate} registered at ${slot}`);
+      
+      setTimeout(() => {
+        renderSlotGrid();
+        highlightSlot(slot);
+      }, 500);
+    }
+
+    function resetEntryForm() {
+      document.getElementById('entryForm').reset();
+      updateEntryTime();
+      loadAvailableSlots();
+      document.getElementById('plateAutocomplete').classList.remove('active');
+    }
+
+    // Smart Search for Exit
+    let searchTimeout;
+    let currentExitVehicle = null;
+
+    function smartSearchVehicle() {
+      const search = document.getElementById('exitSearchPlate').value.trim().toUpperCase();
+      
+      clearTimeout(searchTimeout);
+      
+      if (!search) {
+        document.getElementById('exitVehicleInfo').style.display = 'none';
+        document.getElementById('exitNoVehicle').style.display = 'block';
+        currentExitVehicle = null;
+        return;
+      }
+      
+      searchTimeout = setTimeout(() => {
+        const vehicles = QuantumDataManager.getVehicles();
+        let vehicle = vehicles.find(v => v.plate === search && !v.exitTime);
+        
+        if (!vehicle) {
+          vehicle = vehicles.find(v => v.plate.includes(search) && !v.exitTime);
+        }
+        
+        if (vehicle) {
+          displayExitInfo(vehicle);
+        } else {
+          document.getElementById('exitVehicleInfo').style.display = 'none';
+          document.getElementById('exitNoVehicle').style.display = 'block';
+          currentExitVehicle = null;
+        }
+      }, 300);
+    }
+
+    function displayExitInfo(vehicle) {
+      const exitTime = new Date();
+      const entryTime = new Date(vehicle.entryTime);
+      const duration = calculateDuration(entryTime, exitTime);
+      const cost = calculateCost(entryTime, exitTime, vehicle.type);
+      
+      document.getElementById('exitInfoPlate').textContent = vehicle.plate;
+      document.getElementById('exitInfoType').textContent = vehicle.type.toUpperCase();
+      document.getElementById('exitInfoSlot').textContent = vehicle.slot;
+      document.getElementById('exitInfoEntry').textContent = formatDateTime(vehicle.entryTime);
+      document.getElementById('exitInfoExit').textContent = formatDateTime(exitTime);
+      document.getElementById('exitInfoDuration').textContent = duration;
+      document.getElementById('exitInfoCost').textContent = formatCurrency(cost);
+      
+      document.getElementById('exitVehicleInfo').style.display = 'block';
+      document.getElementById('exitNoVehicle').style.display = 'none';
+      
+      currentExitVehicle = vehicle;
+    }
+
+    function confirmVehicleExit() {
+      if (!currentExitVehicle) return;
+      
+      const exitTime = new Date();
+      const entryTime = new Date(currentExitVehicle.entryTime);
+      const updates = {
+        exitTime: exitTime.toISOString(),
+        duration: calculateDuration(entryTime, exitTime),
+        cost: calculateCost(entryTime, exitTime, currentExitVehicle.type)
+      };
+      
+      QuantumDataManager.updateVehicle(currentExitVehicle.id, updates);
+      QuantumDataManager.addNotification('success', 'Vehicle Exited', 
+        `${currentExitVehicle.plate} departed. Cost: ${formatCurrency(updates.cost)}`);
+      
+      showToast(`✓ ${currentExitVehicle.plate} exited successfully`);
+      clearExitSearch();
+      loadAvailableSlots();
+    }
+
+    function clearExitSearch() {
+      document.getElementById('exitSearchPlate').value = '';
+      document.getElementById('exitVehicleInfo').style.display = 'none';
+      document.getElementById('exitNoVehicle').style.display = 'block';
+      currentExitVehicle = null;
+    }
+
+    // Statistics with Animation
+    function updateAllStats() {
+      const vehicles = QuantumDataManager.getVehicles();
+      const parked = vehicles.filter(v => !v.exitTime);
+      const available = 50 - parked.length;
+      
+      const today = new Date().setHours(0, 0, 0, 0);
+      const exitedToday = vehicles.filter(v => v.exitTime && new Date(v.exitTime).setHours(0, 0, 0, 0) === today);
+      const income = exitedToday.reduce((sum, v) => sum + (v.cost || 0), 0);
+      
+      const typeCount = {
+        car: parked.filter(v => v.type === 'car').length,
+        motorcycle: parked.filter(v => v.type === 'motorcycle').length,
+        truck: parked.filter(v => v.type === 'truck').length,
+        van: parked.filter(v => v.type === 'van').length
+      };
+      
+      animateValue('homeParkedCount', parked.length);
+      animateValue('homeAvailableSlots', available);
+      animateValue('homeTodayIncome', income, true);
+      animateValue('homeTotalExit', exitedToday.length);
+      
+      animateValue('dashParkedCount', parked.length);
+      animateValue('dashExitedCount', exitedToday.length);
+      animateValue('dashAvailableSlots', available);
+      animateValue('dashTodayIncome', income, true);
+      animateValue('dashCarCount', typeCount.car);
+      animateValue('dashMotorcycleCount', typeCount.motorcycle);
+      animateValue('dashTruckCount', typeCount.truck);
+      animateValue('dashVanCount', typeCount.van);
+    }
+
+    function animateValue(id, target, isCurrency = false) {
+      const elem = document.getElementById(id);
+      if (!elem) return;
+      
+      let current = parseInt(elem.textContent.replace(/[^0-9]/g, '')) || 0;
+      if (current === target) return;
+      
+      const duration = 800;
+      const steps = 30;
+      const increment = (target - current) / steps;
+      let step = 0;
+      
+      const interval = setInterval(() => {
+        step++;
+        current += increment;
+        
+        if (step >= steps) {
+          current = target;
+          clearInterval(interval);
+        }
+        
+        elem.textContent = isCurrency ? formatCurrency(Math.round(current)) : Math.round(current);
+      }, duration / steps);
+    }
+
+    function updateDashboardTime() {
+      const elem = document.getElementById('lastUpdated');
+      if (elem) {
+        elem.textContent = new Date().toLocaleTimeString('en-US', { hour12: false });
+      }
+    }
+
+    // AI Insights Generation
+    function generateInsights() {
+      const vehicles = QuantumDataManager.getVehicles();
+      const parked = vehicles.filter(v => !v.exitTime);
+      const capacity = ((parked.length / 50) * 100).toFixed(0);
+      
+      let insight = '';
+      if (parked.length === 0) {
+        insight = 'All slots available. System ready for incoming vehicles.';
+      } else if (parked.length < 10) {
+        insight = `Low occupancy detected (${capacity}%). Optimal entry conditions.`;
+      } else if (parked.length < 40) {
+        insight = `Moderate traffic (${capacity}% capacity). System operating normally.`;
+      } else if (parked.length < 48) {
+        insight = `High occupancy (${capacity}%). Consider preparing overflow protocols.`;
+      } else {
+        insight = `Critical capacity (${capacity}%). Only ${50 - parked.length} slots remaining.`;
+      }
+      
+      const elem1 = document.getElementById('aiInsightText');
+      const elem2 = document.getElementById('dashAiInsightText');
+      if (elem1) elem1.textContent = insight;
+      if (elem2) elem2.textContent = insight;
+    }
+
+    // Load History
+    function loadHistory() {
+      const vehicles = QuantumDataManager.getVehicles();
+      const tbody = document.getElementById('historyTableBody');
+      
+      if (vehicles.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align: center; padding: 3rem; opacity: 0.4;">
+              <div style="font-size: 3rem; margin-bottom: 1rem;">📁</div>
+              <div>No records in database</div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      
+      vehicles.sort((a, b) => new Date(b.entryTime) - new Date(a.entryTime));
+      
+      tbody.innerHTML = vehicles.map(v => {
+        const statusBadge = v.exitTime 
+          ? '<span class="status-badge status-exited">Exited</span>'
+          : '<span class="status-badge status-active">● Active</span>';
+        
+        return `
+          <tr>
+            <td style="font-weight: 500;">${v.plate}</td>
+            <td style="text-transform: uppercase;">${v.type}</td>
+            <td>${v.slot}</td>
+            <td style="font-size: 0.8125rem;">${formatDateTime(v.entryTime)}</td>
+            <td style="font-size: 0.8125rem;">${v.exitTime ? formatDateTime(v.exitTime) : '—'}</td>
+            <td>${v.duration || '—'}</td>
+            <td style="font-weight: 500;">${v.cost ? formatCurrency(v.cost) : '—'}</td>
+            <td>
+              <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                ${statusBadge}
+                <button class="action-btn" onclick="viewVehicleDetail('${v.id}')">VIEW</button>
+                <button class="action-btn" onclick="deleteRecord('${v.id}')">DEL</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function applyFilters() {
+      const dateFilter = document.getElementById('filterDate').value;
+      const typeFilter = document.getElementById('filterType').value;
+      const statusFilter = document.getElementById('filterStatus').value;
+      
+      let vehicles = QuantumDataManager.getVehicles();
+      
+      if (dateFilter) {
+        const selected = new Date(dateFilter).setHours(0, 0, 0, 0);
+        vehicles = vehicles.filter(v => new Date(v.entryTime).setHours(0, 0, 0, 0) === selected);
+      }
+      
+      if (typeFilter) {
+        vehicles = vehicles.filter(v => v.type === typeFilter);
+      }
+      
+      if (statusFilter === 'parked') {
+        vehicles = vehicles.filter(v => !v.exitTime);
+      } else if (statusFilter === 'exited') {
+        vehicles = vehicles.filter(v => v.exitTime);
+      }
+      
+      displayFilteredHistory(vehicles);
+    }
+
+    function displayFilteredHistory(vehicles) {
+      const tbody = document.getElementById('historyTableBody');
+      
+      if (vehicles.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align: center; padding: 3rem; opacity: 0.4;">No matching records</td>
+          </tr>
+        `;
+        return;
+      }
+      
+      vehicles.sort((a, b) => new Date(b.entryTime) - new Date(a.entryTime));
+      
+      tbody.innerHTML = vehicles.map(v => {
+        const statusBadge = v.exitTime 
+          ? '<span class="status-badge status-exited">Exited</span>'
+          : '<span class="status-badge status-active">● Active</span>';
+        
+        return `
+          <tr>
+            <td style="font-weight: 500;">${v.plate}</td>
+            <td style="text-transform: uppercase;">${v.type}</td>
+            <td>${v.slot}</td>
+            <td style="font-size: 0.8125rem;">${formatDateTime(v.entryTime)}</td>
+            <td style="font-size: 0.8125rem;">${v.exitTime ? formatDateTime(v.exitTime) : '—'}</td>
+            <td>${v.duration || '—'}</td>
+            <td style="font-weight: 500;">${v.cost ? formatCurrency(v.cost) : '—'}</td>
+            <td>
+              <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                ${statusBadge}
+                <button class="action-btn" onclick="viewVehicleDetail('${v.id}')">VIEW</button>
+                <button class="action-btn" onclick="deleteRecord('${v.id}')">DEL</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function viewVehicleDetail(id) {
+      const vehicles = QuantumDataManager.getVehicles();
+      const vehicle = vehicles.find(v => v.id === id);
+      if (!vehicle) return;
+      
+      const overlay = document.getElementById('modalOverlay');
+      overlay.innerHTML = `
+        <div class="quantum-modal">
+          <div class="modal-header">
+            <h2 class="modal-title">Vehicle Data</h2>
+            <button class="modal-close" onclick="closeModal()">×</button>
+          </div>
+          <div>
+            <div class="detail-row">
+              <span class="detail-label">License Plate</span>
+              <span class="detail-value" style="font-size: 1.125rem; font-weight: 500;">${vehicle.plate}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Vehicle Type</span>
+              <span class="detail-value" style="text-transform: uppercase;">${vehicle.type}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Parking Slot</span>
+              <span class="detail-value">${vehicle.slot}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Entry Time</span>
+              <span class="detail-value">${formatDateTime(vehicle.entryTime)}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Exit Time</span>
+              <span class="detail-value">${vehicle.exitTime ? formatDateTime(vehicle.exitTime) : 'Still parked'}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Duration</span>
+              <span class="detail-value">${vehicle.duration || '—'}</span>
+            </div>
+            <div class="detail-row" style="border-bottom: none;">
+              <span class="detail-label">Total Cost</span>
+              <span class="detail-value" style="font-size: 1.5rem; font-weight: 500;">${vehicle.cost ? formatCurrency(vehicle.cost) : '—'}</span>
+            </div>
+          </div>
+          <div class="btn-group">
+            <button class="quantum-btn" onclick="closeModal()">Close</button>
+          </div>
+        </div>
+      `;
+      overlay.classList.add('active');
+    }
+
+    function deleteRecord(id) {
+      const overlay = document.getElementById('modalOverlay');
+      overlay.innerHTML = `
+        <div class="quantum-modal" style="max-width: 450px;">
+          <div class="modal-header">
+            <h2 class="modal-title">Confirm Delete</h2>
+            <button class="modal-close" onclick="closeModal()">×</button>
+          </div>
+          <p style="margin-bottom: 2rem; font-weight: 300; opacity: 0.8; line-height: 1.6;">
+            Are you sure you want to permanently delete this record? This action cannot be undone.
+          </p>
+          <div class="btn-group">
+            <button class="quantum-btn quantum-btn-primary" onclick="confirmDelete('${id}')">Delete</button>
+            <button class="quantum-btn" onclick="closeModal()">Cancel</button>
+          </div>
+        </div>
+      `;
+      overlay.classList.add('active');
+    }
+
+    function confirmDelete(id) {
+      QuantumDataManager.deleteVehicle(id);
+      closeModal();
+      loadHistory();
+      showToast('✓ Record deleted');
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('active');
+      setTimeout(() => {
+        document.getElementById('modalOverlay').innerHTML = '';
+      }, 300);
+    }
+
+    // Render Slot Grid
+    function renderSlotGrid() {
+      const vehicles = QuantumDataManager.getVehicles();
+      const occupied = new Map();
+      vehicles.filter(v => !v.exitTime).forEach(v => occupied.set(v.slot, v));
+      
+      const grid = document.getElementById('slotGrid');
+      grid.innerHTML = '';
+      
+      for (let i = 1; i <= 50; i++) {
+        const slotNum = `A${String(i).padStart(2, '0')}`;
+        const vehicle = occupied.get(slotNum);
+        const isOccupied = vehicle !== undefined;
+        
+        const slot = document.createElement('div');
+        slot.className = `holo-slot ${isOccupied ? 'occupied' : 'available'}`;
+        slot.dataset.slot = slotNum;
+        slot.innerHTML = `
+          <div class="slot-number">${slotNum}</div>
+          <div class="slot-status">${isOccupied ? vehicle.plate : 'FREE'}</div>
+        `;
+        
+        if (isOccupied) {
+          slot.onclick = () => viewVehicleDetail(vehicle.id);
+          slot.style.cursor = 'pointer';
+        }
+        
+        grid.appendChild(slot);
+      }
+    }
+
+    function highlightSlot(slotNum) {
+      setTimeout(() => {
+        const slot = document.querySelector(`[data-slot="${slotNum}"]`);
+        if (slot) {
+          slot.classList.add('pulse-animation');
+          setTimeout(() => slot.classList.remove('pulse-animation'), 4500);
+        }
+      }, 100);
+    }
+
+    // Notifications
+    function loadNotifications() {
+      const notifications = QuantumDataManager.getNotifications();
+      const container = document.getElementById('notificationCenter');
+      
+      if (notifications.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 4rem 0; opacity: 0.4;">
+            <div style="font-size: 4rem; margin-bottom: 1.5rem;">🔔</div>
+            <div style="letter-spacing: 2px; text-transform: uppercase;">No notifications</div>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = notifications.map(n => {
+        const icons = { success: '✓', warning: '⚠️', alert: '🚫', info: 'ℹ️' };
+        const icon = icons[n.type] || 'ℹ️';
+        const isCritical = n.type === 'alert' ? ' critical' : '';
+        
+        return `
+          <div class="notif-item${isCritical}">
+            <div class="notif-icon">${icon}</div>
+            <div class="notif-content">
+              <div class="notif-title">${n.title}</div>
+              <div class="notif-message">${n.message}</div>
+              <div class="notif-time">${getTimeAgo(new Date(n.timestamp))}</div>
+            </div>
+            ${!n.read ? '<div class="notif-badge"></div>' : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function getTimeAgo(date) {
+      const diff = Date.now() - date;
+      const minutes = Math.floor(diff / 60000);
+      const hours = Math.floor(minutes / 60);
+      const days = Math.floor(hours / 24);
+      
+      if (minutes < 1) return 'Just now';
+      if (minutes < 60) return `${minutes}m ago`;
+      if (hours < 24) return `${hours}h ago`;
+      return `${days}d ago`;
+    }
+
+    // Theme Toggle
+    function toggleTheme() {
+      const isLight = document.getElementById('themeToggle').checked;
+      document.body.classList.toggle('light-mode', isLight);
+      localStorage.setItem(STORAGE.THEME, isLight ? 'light' : 'dark');
+      showToast(isLight ? '☀️ Light mode activated' : '🌙 Dark mode activated');
+    }
+
+    // Export Data
+    function exportSystemData() {
+      const data = QuantumDataManager.exportData();
+      const blob = new Blob([data], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `quantum-parking-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('✓ Database exported');
+    }
+
+    // Data Reset
+    function confirmDataReset() {
+      const overlay = document.getElementById('modalOverlay');
+      overlay.innerHTML = `
+        <div class="quantum-modal" style="max-width: 450px;">
+          <div class="modal-header">
+            <h2 class="modal-title">Confirm Reset</h2>
+            <button class="modal-close" onclick="closeModal()">×</button>
+          </div>
+          <p style="margin-bottom: 2rem; font-weight: 300; opacity: 0.8; line-height: 1.6;">
+            This will permanently delete all parking records. This action cannot be undone. Are you sure?
+          </p>
+          <div class="btn-group">
+            <button class="quantum-btn quantum-btn-primary" onclick="executeReset()">Confirm Reset</button>
+            <button class="quantum-btn" onclick="closeModal()">Cancel</button>
+          </div>
+        </div>
+      `;
+      overlay.classList.add('active');
+    }
+
+    function executeReset() {
+      QuantumDataManager.clearAll();
+      closeModal();
+      loadAvailableSlots();
+      loadHistory();
+      renderSlotGrid();
+      showToast('✓ All data cleared');
+    }
+
+    // Element SDK Integration
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (newConfig) => {
+          config = { ...defaultConfig, ...newConfig };
+          applyConfig();
+        },
+        mapToCapabilities: () => ({
+          recolorables: [],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (cfg) => new Map([
+          ["app_title", cfg.app_title || defaultConfig.app_title],
+          ["welcome_message", cfg.welcome_message || defaultConfig.welcome_message],
+          ["entry_page_title", cfg.entry_page_title || defaultConfig.entry_page_title],
+          ["exit_page_title", cfg.exit_page_title || defaultConfig.exit_page_title],
+          ["dashboard_title", cfg.dashboard_title || defaultConfig.dashboard_title],
+          ["history_title", cfg.history_title || defaultConfig.history_title]
+        ])
+      });
+    }
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', initQuantumSystem);
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a2cfe0944d7ea8a',t:'MTc2Mzg2MjM4MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
